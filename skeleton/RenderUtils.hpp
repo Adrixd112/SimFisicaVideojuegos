@@ -10,7 +10,9 @@ void DeregisterRenderItem(const RenderItem* _item);
 
 class RenderItem
 {
-public:
+	friend class Scene;
+
+	private:
 	RenderItem(physx::PxShape* _shape, const physx::PxTransform* _trans, const Vector4& _color) :
 		shape(_shape), transform(_trans), actor(NULL), color(_color), references(1)
 	{
@@ -49,8 +51,9 @@ public:
 			delete this;
 		}
 	}
-
+	
 public:
+	
 	physx::PxShape* shape;
 	const physx::PxTransform* transform;
 	const physx::PxRigidActor* actor;

@@ -18,6 +18,7 @@ void SceneManager::applyPendingSceneChange() {
     if (!m_hasPendingChange) return;
 
     if (m_currentScene) {
+        m_currentScene->Scene::cleanup();
         m_currentScene->cleanup();
     }
 
