@@ -53,7 +53,7 @@ class RenderItem
 	}
 	
 public:
-	
+
 	physx::PxShape* shape;
 	const physx::PxTransform* transform;
 	const physx::PxRigidActor* actor;

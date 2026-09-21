@@ -12,9 +12,8 @@ public:
         // Ejemplo: Creación de una esfera usando las utilidades de render existentes
         physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(2.0f));
         m_transform = physx::PxTransform(physx::PxVec3(0.0f, 10.0f, 0.0f));
-
         // Se registra el RenderItem exactamente como en la plantilla original
-        m_renderItem = new RenderItem(shape, &m_transform, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+        m_renderItem = addRenderItem(shape, &m_transform, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
     }
 
     void update(double dt) override {
@@ -29,10 +28,7 @@ public:
     }
 
     void cleanup() override {
-        if (m_renderItem) {
-            m_renderItem->release(); // Deregistra y destruye el item
-            m_renderItem = nullptr;
-        }
+
     }
 
 private:

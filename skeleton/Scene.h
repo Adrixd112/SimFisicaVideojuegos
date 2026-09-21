@@ -2,6 +2,7 @@
 
 #include <string>
 #include "PxPhysicsAPI.h"
+#include "Vector3D.h"
 #include "RenderUtils.hpp"
 #include <unordered_set>
 // Clase base para las distintas escenas de la aplicación.
@@ -29,18 +30,22 @@ public:
 	RenderItem* addRenderItem(physx::PxShape* _shape, const physx::PxTransform* _trans, const Vector4& _color) {
 		RenderItem* ri = new RenderItem(_shape, _trans, _color);
 		renderItems.insert(ri);
+		return ri;
 	}
 	RenderItem* addRenderItem(physx::PxShape* _shape, const Vector4& _color) {
 		RenderItem* ri = new RenderItem(_shape, _color);
 		renderItems.insert(ri);
+		return ri;
 	}
 	RenderItem* addRenderItem(physx::PxShape* _shape, const physx::PxRigidActor* _actor, const Vector4& _color) {
 		RenderItem* ri = new RenderItem(_shape, _actor, _color);
 		renderItems.insert(ri);
+		return ri;
 	}
 	RenderItem* addRenderItem() {
 		RenderItem* ri = new RenderItem();
 		renderItems.insert(ri);
+		return ri;
 	}
 
 	//Invariantes: el todo renderItem existente debe estar en la lista de la escena y todo renderItem de la lista de la escena existe.

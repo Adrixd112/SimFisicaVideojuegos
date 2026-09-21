@@ -8,27 +8,27 @@
   SceneManager.cpp
   Vector3D.cpp
   ⚠️ ¡ALERTA! Ambas macros (_DEBUG y NDEBUG) están definidas a la vez.
-G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(454,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined!
-  (compilando archivo de origen "Render/Render.cpp")
-  
-G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(454,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined!
-  (compilando archivo de origen "Vector3D.cpp")
-  
-G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(454,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined!
-  (compilando archivo de origen "Render/Camera.cpp")
-  
-G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(454,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined!
-  (compilando archivo de origen "main.cpp")
-  
-G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(454,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined!
+G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(455,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined! (both are)
   (compilando archivo de origen "callbacks.cpp")
   
-G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(454,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined!
+G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(455,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined! (both are)
+  (compilando archivo de origen "main.cpp")
+  
+G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(455,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined! (both are)
+  (compilando archivo de origen "Render/Render.cpp")
+  
+G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(455,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined! (both are)
+  (compilando archivo de origen "Vector3D.cpp")
+  
+G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(455,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined! (both are)
+  (compilando archivo de origen "Render/Camera.cpp")
+  
+G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(455,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined! (both are)
   (compilando archivo de origen "RenderUtils.cpp")
   
-G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(454,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined!
+G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(455,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined! (both are)
   (compilando archivo de origen "SceneManager.cpp")
   
-G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(454,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined!
+G:\SimFisicaVideojuegos\skeleton\packages\NVIDIA.PhysX.4.1.229882250\installed\x64-windows\include\foundation\PxPreprocessor.h(455,1): error C1189: #error:  Exactly one of NDEBUG and _DEBUG needs to be defined! (both are)
   (compilando archivo de origen "Scene.cpp")
   
