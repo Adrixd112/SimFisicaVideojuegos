@@ -23,6 +23,7 @@ public:
 		for (RenderItem* ri : renderItems) {
 				ri->release();
 		}
+		renderItems.clear();
 	}
 
 	RenderItem* addRenderItem(physx::PxShape* _shape, const physx::PxTransform* _trans, const Vector4& _color) {
