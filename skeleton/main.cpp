@@ -23,6 +23,7 @@
 #include "SceneManager.h"
 #include "EmptyScene.h"
 #include "Scene_0.h"
+#include "Scene_0B.h"
 
 #include <foundation/PxSimpleTypes.h>
 #include <PxPhysicsVersion.h> // <- Macros for PhysX version checking
@@ -97,10 +98,11 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
+
 	// Registrar las prácticas/escenas del curso
 	SceneManager::instance().registerScene<EmptyScene>("EscenaVacia");
 	SceneManager::instance().registerScene<Scene_0>("EscenaCero");
-
+	SceneManager::instance().registerScene<Scene_0B>("EscenaCeroB");
 	// Cargar la escena inicial
 	SceneManager::instance().changeScene("EscenaVacia");
 	
