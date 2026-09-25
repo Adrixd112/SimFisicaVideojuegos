@@ -13,6 +13,7 @@ using TransformPointer = std::shared_ptr<physx::PxTransform>;
 class RenderItem
 {
 	friend class Scene;
+	friend class Particle;
 
 	private:
 	RenderItem(physx::PxShape* _shape, TransformPointer _trans, const Vector4& _color) :
