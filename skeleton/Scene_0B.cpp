@@ -10,22 +10,22 @@ void Scene_0B::init()
 
 	float dot = Vector3D::dot(v1, Vector3D(0,0,1));
 	m_transform1 = physx::PxTransform(v1);
-	placeSphere(&m_transform1, dot);
+	placeSphere(m_transform1, dot);
 
 	dot = Vector3D::dot(v2, Vector3D(0, 0, 1));
 	m_transform2 = physx::PxTransform(v2);
-	placeSphere(&m_transform2, dot);
+	placeSphere(m_transform2, dot);
 
 	dot = Vector3D::dot(v3, Vector3D(0, 0, 1));
 	m_transform3 = physx::PxTransform(v3);
-	placeSphere(&m_transform3, dot);
+	placeSphere(m_transform3, dot);
 
 	dot = Vector3D::dot(v4, Vector3D(0, 0, 1));
 	m_transform4 = physx::PxTransform(v4);
-	placeSphere(&m_transform4, dot);
+	placeSphere(m_transform4, dot);
 }
 
-void Scene_0B::placeSphere(physx::PxTransform* tr,float dot) {
+void Scene_0B::placeSphere(const physx::PxTransform& tr,float dot) {
 	physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(1.0f));
 
 	if (dot > 0) {

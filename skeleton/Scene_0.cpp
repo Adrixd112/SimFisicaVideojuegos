@@ -20,8 +20,8 @@ void Scene_0::init()
 
 
     // Se registra el RenderItem exactamente como en la plantilla original
-    addRenderItem(shape, &m_transformX, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    addRenderItem(shape, &m_transformY, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-    addRenderItem(shape, &m_transformZ, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
-    addRenderItem(shape, &m_transform0, Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+    addRenderItem(shape, m_transformX, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+    addRenderItem(shape, m_transformY, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+    addRenderItem(shape, m_transformZ, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+    addRenderItem(shape, m_transform0, Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 }

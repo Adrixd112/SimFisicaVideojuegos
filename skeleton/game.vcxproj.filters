@@ -15,6 +15,7 @@
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="Scene_0.cpp" />
     <ClCompile Include="Scene_0B.cpp" />
+    <ClCompile Include="Scene_0C.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -32,6 +33,7 @@
     <ClInclude Include="Vector3D.h" />
     <ClInclude Include="Scene_0.h" />
     <ClInclude Include="Scene_0B.h" />
+    <ClInclude Include="Scene_0C.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

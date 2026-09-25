@@ -22,7 +22,7 @@ public:
 
 	}
 private:
-	void placeSphere(physx::PxTransform* tr, float dot);
+	void placeSphere(const physx::PxTransform& tr, float dot);
 
 	physx::PxTransform m_transform1;
 	physx::PxTransform m_transform2;

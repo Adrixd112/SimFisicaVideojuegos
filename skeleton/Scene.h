@@ -5,10 +5,11 @@
 #include "Vector3D.h"
 #include "RenderUtils.hpp"
 #include <unordered_set>
+#include <memory>
 // Clase base para las distintas escenas de la aplicación.
 // Provee la interfaz mínima que debe implementar cualquier escena:
 // inicialización, limpieza, actualización por frame y manejo de teclado.
-class Scene 
+class Scene
 {
 public:
 	// Construye la escena con un nombre identificador.
@@ -22,12 +23,32 @@ public:
 	//Invariantes: el todo renderItem existente debe estar en la lista de la escena y todo renderItem de la lista de la escena existe.
 	virtual void cleanup() {
 		for (RenderItem* ri : renderItems) {
-				ri->release();
+			ri->release();
 		}
 		renderItems.clear();
 	}
-
-	RenderItem* addRenderItem(physx::PxShape* _shape, const physx::PxTransform* _trans, const Vector4& _color) {
+	RenderItem* addRenderItem(physx::PxShape* _shape, const Vector3& _pos, const physx::PxQuat& quat, const Vector4& _color)
+	{
+		nonParticleTransforms.push_back(std::make_shared<physx::PxTransform>(_pos,quat));
+		RenderItem* ri = new RenderItem(_shape, *--nonParticleTransforms.end(), _color);
+		renderItems.insert(ri);
+		return ri;
+	}
+	RenderItem* addRenderItem(physx::PxShape* _shape, const Vector3& _pos, const Vector4& _color)
+	{
+		nonParticleTransforms.push_back(std::make_shared<physx::PxTransform>(_pos));
+		RenderItem* ri = new RenderItem(_shape, *--nonParticleTransforms.end(), _color);
+		renderItems.insert(ri);
+		return ri;
+	}
+	RenderItem* addRenderItem(physx::PxShape* _shape, const physx::PxTransform& _trans, const Vector4& _color)
+	{
+		nonParticleTransforms.push_back(std::make_shared<physx::PxTransform>(_trans));
+		RenderItem* ri = new RenderItem(_shape, *--nonParticleTransforms.end(), _color);
+		renderItems.insert(ri);
+		return ri;
+	}
+	RenderItem* addRenderItem(physx::PxShape* _shape, TransformPointer _trans, const Vector4& _color) {
 		RenderItem* ri = new RenderItem(_shape, _trans, _color);
 		renderItems.insert(ri);
 		return ri;
@@ -76,4 +97,5 @@ protected:
 	std::string m_name;
 private:
 	std::unordered_set<RenderItem*> renderItems;
+	std::vector<std::shared_ptr<physx::PxTransform>> nonParticleTransforms;
 };
