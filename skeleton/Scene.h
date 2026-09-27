@@ -4,6 +4,7 @@
 #include "PxPhysicsAPI.h"
 #include "Vector3D.h"
 #include "RenderUtils.hpp"
+#include "Particle.h"
 #include <unordered_set>
 #include <memory>
 // Clase base para las distintas escenas de la aplicación.
@@ -22,56 +23,62 @@ public:
 	// Libera los recursos asignados en init().
 	//Invariantes: el todo renderItem existente debe estar en la lista de la escena y todo renderItem de la lista de la escena existe.
 	virtual void cleanup() {
-		for (RenderItem* ri : renderItems) {
+		for (RenderItemO* ri : nonParticleRenderItems) {
 			ri->release();
 		}
-		renderItems.clear();
+		nonParticleRenderItems.clear();
 	}
-	RenderItem* addRenderItem(physx::PxShape* _shape, const Vector3& _pos, const physx::PxQuat& quat, const Vector4& _color)
+	RenderItemO* addRenderItem(physx::PxShape* _shape, const Vector3& _pos, const physx::PxQuat& quat, const Vector4& _color)
 	{
 		nonParticleTransforms.push_back(std::make_shared<physx::PxTransform>(_pos,quat));
-		RenderItem* ri = new RenderItem(_shape, *--nonParticleTransforms.end(), _color);
-		renderItems.insert(ri);
+		RenderItemO* ri = new RenderItemO(_shape, *--nonParticleTransforms.end(), _color);
+		nonParticleRenderItems.insert(ri);
 		return ri;
 	}
-	RenderItem* addRenderItem(physx::PxShape* _shape, const Vector3& _pos, const Vector4& _color)
+	RenderItemO* addRenderItem(physx::PxShape* _shape, const Vector3& _pos, const Vector4& _color)
 	{
 		nonParticleTransforms.push_back(std::make_shared<physx::PxTransform>(_pos));
-		RenderItem* ri = new RenderItem(_shape, *--nonParticleTransforms.end(), _color);
-		renderItems.insert(ri);
+		RenderItemO* ri = new RenderItemO(_shape, *--nonParticleTransforms.end(), _color);
+		nonParticleRenderItems.insert(ri);
 		return ri;
 	}
-	RenderItem* addRenderItem(physx::PxShape* _shape, const physx::PxTransform& _trans, const Vector4& _color)
+	RenderItemO* addRenderItem(physx::PxShape* _shape, const physx::PxTransform& _trans, const Vector4& _color)
 	{
 		nonParticleTransforms.push_back(std::make_shared<physx::PxTransform>(_trans));
-		RenderItem* ri = new RenderItem(_shape, *--nonParticleTransforms.end(), _color);
-		renderItems.insert(ri);
+		RenderItemO* ri = new RenderItemO(_shape, *--nonParticleTransforms.end(), _color);
+		nonParticleRenderItems.insert(ri);
 		return ri;
 	}
-	RenderItem* addRenderItem(physx::PxShape* _shape, TransformPointer _trans, const Vector4& _color) {
-		RenderItem* ri = new RenderItem(_shape, _trans, _color);
-		renderItems.insert(ri);
+	RenderItemO* addRenderItem(physx::PxShape* _shape, TransformSPointer _trans, const Vector4& _color) {
+		RenderItemO* ri = new RenderItemO(_shape, _trans, _color);
+		nonParticleRenderItems.insert(ri);
 		return ri;
 	}
-	RenderItem* addRenderItem(physx::PxShape* _shape, const Vector4& _color) {
-		RenderItem* ri = new RenderItem(_shape, _color);
-		renderItems.insert(ri);
+	RenderItemO* addRenderItem(physx::PxShape* _shape, const Vector4& _color) {
+		RenderItemO* ri = new RenderItemO(_shape, _color);
+		nonParticleRenderItems.insert(ri);
 		return ri;
 	}
-	RenderItem* addRenderItem(physx::PxShape* _shape, const physx::PxRigidActor* _actor, const Vector4& _color) {
-		RenderItem* ri = new RenderItem(_shape, _actor, _color);
-		renderItems.insert(ri);
+	RenderItemO* addRenderItem(physx::PxShape* _shape, const physx::PxRigidActor* _actor, const Vector4& _color) {
+		RenderItemO* ri = new RenderItemO(_shape, _actor, _color);
+		nonParticleRenderItems.insert(ri);
 		return ri;
 	}
-	RenderItem* addRenderItem() {
-		RenderItem* ri = new RenderItem();
-		renderItems.insert(ri);
+	RenderItemO* addRenderItem() {
+		RenderItemO* ri = new RenderItemO();
+		nonParticleRenderItems.insert(ri);
 		return ri;
 	}
 
-	//Invariantes: el todo renderItem existente debe estar en la lista de la escena y todo renderItem de la lista de la escena existe.
-	bool removeRenderItem(RenderItem*& ri) {
-		bool found = renderItems.erase(ri); //devuelve int n elems borrados que solo pueden ser 0->false o 1->true
+	Particle* addParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97) {
+		particles.emplace_back(pos,v,a,damping);
+	}
+	Particle* addParticle(const Vector3D& pos, double damping, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }) {
+		particles.emplace_back(pos, v, a, damping);
+	}
+	//Invariantes: el todo renderItem existente debe estar en una partícula o en la lista de la escena y todo renderItem de la lista de la escena existe.
+	bool removeRenderItem(RenderItemO*& ri) {
+		bool found = nonParticleRenderItems.erase(ri); //devuelve int n elems borrados que solo pueden ser 0->false o 1->true
 		if (found)
 		{
 			ri->release(); // Deregistra y destruye el item
@@ -81,8 +88,8 @@ public:
 	}
 	// Actualiza la lógica de la escena.
 	// dt: tiempo en segundos transcurrido desde la última actualización.
-	virtual void update(double dt) = 0;
-
+	virtual void update(double dt) {};
+	void physicsUpdate(double dt) { for (Particle& p : particles) { p.Integrate(dt); } }
 	// Manejo de pulsación de tecla.
 	// Se recibe la tecla pulsada y la transformada de la cámara para
 	// permitir respuestas dependientes de la orientación/posición de la cámara.
@@ -92,14 +99,11 @@ public:
 	// Devuelve el nombre identificador de la escena.
 	[[nodiscard]] const std::string& getName() const { return m_name; }
 
-	void generateLerpBetween(const physx::PxTransform p1, const physx::PxTransform p2) {
-
-	}
-
 protected:
 	// Nombre de la escena (útil para identificarla en menús o logs).
 	std::string m_name;
 private:
-	std::unordered_set<RenderItem*> renderItems;
-	std::vector<std::shared_ptr<physx::PxTransform>> nonParticleTransforms;
+	std::unordered_set<RenderItemO*> nonParticleRenderItems;
+	std::vector<TransformSPointer> nonParticleTransforms;
+	std::vector<Particle> particles;
 };

@@ -44,6 +44,10 @@ void SceneManager::update(double dt) {
     }
 }
 
+void SceneManager::fixedUpdate(double dt) {
+    m_currentScene->physicsUpdate(dt);
+}
+
 // Reenvía eventos de teclado a la escena actual. Mantener este método simple
 // permite centralizar atajos globales si se desea en el futuro.
 void SceneManager::keyPress(unsigned char key, const physx::PxTransform& cameraTransform) {
@@ -58,6 +62,10 @@ void SceneManager::keyPress(unsigned char key, const physx::PxTransform& cameraT
     }
     if (key == '1') {
         changeScene("EscenaCeroB");
+        return; // Consumimos el evento para que no interfiera con la escena
+    }
+    if (key == '2') {
+        changeScene("EscenaCeroC");
         return; // Consumimos el evento para que no interfiera con la escena
     }
 

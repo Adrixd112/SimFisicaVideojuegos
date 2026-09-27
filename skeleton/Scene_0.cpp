@@ -16,7 +16,7 @@ void Scene_0::init()
     m_transform0 = physx::PxTransform(Vector3D());
 
     // Ejemplo: Creación de una esfera usando las utilidades de render existentes
-    physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(1.0f));
+    physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(0.5f));
 
 
     // Se registra el RenderItem exactamente como en la plantilla original

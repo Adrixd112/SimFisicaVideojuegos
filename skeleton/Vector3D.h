@@ -23,6 +23,7 @@ public:
 
 	//operadores
 	Vector3D operator*(float scalar) const noexcept { return Vector3D(x * scalar, y * scalar, z * scalar); }
+	Vector3D operator/(float scalar) const noexcept { return Vector3D(x / scalar, y / scalar, z / scalar); }
 	
 	Vector3D operator+(const Vector3D& other) const noexcept { return Vector3D(x + other.x ,y +other.y , z +other.z); }
 	Vector3D operator-(const Vector3D& other) const noexcept { return Vector3D(x - other.x, y - other.y, z - other.z); }
@@ -38,3 +39,4 @@ public:
 
 };
 
+inline Vector3D operator*(float scalar, const Vector3D& v) noexcept { return v * scalar; }

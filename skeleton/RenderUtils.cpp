@@ -15,7 +15,9 @@ extern void keyPress(unsigned char key, const PxTransform& camera);
 extern PxPhysics* gPhysics;
 extern PxMaterial* gMaterial;
 
-std::vector<const RenderItem*> gRenderItems;
+//Creo q mejor ponerlos en la escena.
+std::vector<const RenderItemO*> gRenderItemsO;
+std::vector<const RenderItemP*> gRenderItemsP;
 
 double PCFreq = 0.0;
 __int64 CounterStart = 0;
@@ -98,9 +100,24 @@ void renderCallback()
 	startRender(sCamera->getEye(), sCamera->getDir());
 
 	//fprintf(stderr, "Num Render Items: %d\n", static_cast<int>(gRenderItems.size()));
-	for (auto it = gRenderItems.begin(); it != gRenderItems.end(); ++it)
+	for (auto it = gRenderItemsO.begin(); it != gRenderItemsO.end(); ++it)
 	{
-		const RenderItem* obj = (*it);
+		const RenderItemO* obj = (*it);
+		auto objTransform = obj->transform;
+		if (!objTransform)
+		{
+			auto actor = obj->actor;
+			if (actor)
+			{
+				renderShape(*obj->shape, actor->getGlobalPose(), obj->color);
+				continue;
+			}
+		}
+		renderShape(*obj->shape, objTransform ? *objTransform : physx::PxTransform(PxIdentity), obj->color);
+	}
+	for (auto it = gRenderItemsP.begin(); it != gRenderItemsP.end(); ++it)
+	{
+		const RenderItemP* obj = (*it);
 		auto objTransform = obj->transform;
 		if (!objTransform)
 		{
@@ -155,15 +172,24 @@ void renderLoop()
 	glutMainLoop();
 }
 
-void RegisterRenderItem(const RenderItem* _item)
+void RegisterRenderItem(const RenderItemO* _item)
 {
-	gRenderItems.push_back(_item);
+	gRenderItemsO.push_back(_item);
+}
+void RegisterRenderItem(const RenderItemP* _item)
+{
+	gRenderItemsP.push_back(_item);
 }
 
-void DeregisterRenderItem(const RenderItem* _item)
+void DeregisterRenderItem(const RenderItemO* _item)
 {
-	auto it = find(gRenderItems.begin(), gRenderItems.end(), _item);
-	gRenderItems.erase(it);
+	auto it = find(gRenderItemsO.begin(), gRenderItemsO.end(), _item);
+	gRenderItemsO.erase(it);
+}
+void DeregisterRenderItem(const RenderItemP* _item)
+{
+	auto it = find(gRenderItemsP.begin(), gRenderItemsP.end(), _item);
+	gRenderItemsP.erase(it);
 }
 
 double GetLastTime()
