@@ -42,11 +42,10 @@ protected:
 		--references;
 		if (references == 0)
 		{
-			DeregisterRenderItem(this);
 			shape->release();
 			delete this;
 		}
-	}
+	virtual void release() = 0;
 	
 public:
 
@@ -62,13 +61,26 @@ class RenderItemP:public RenderItem
 	friend class Particle;
 private:
 
-	RenderItemP(physx::PxShape* _shape, physx::PxTransform* _trans, const Vector4& _color) : RenderItem(_shape,_color), transform(_trans) {}
+	RenderItemP(physx::PxShape* _shape, physx::PxTransform* _trans, const Vector4& _color) : RenderItem(_shape,_color), transform(_trans) { RegisterRenderItem(this); }
+
+	RenderItemP(physx::PxShape* _shape,  const Vector4& _color) : RenderItem(_shape, _color), transform(NULL) { RegisterRenderItem(this); }
 
 	RenderItemP(physx::PxShape* _shape,  const Vector4& _color) : RenderItem(_shape, _color), transform(NULL) {}
+	RenderItemP(physx::PxShape* _shape, const physx::PxRigidActor* _actor, const Vector4& _color): RenderItem(_shape,_actor,_color), transform(NULL) { RegisterRenderItem(this); }
 
-	RenderItemP(physx::PxShape* _shape, const physx::PxRigidActor* _actor, const Vector4& _color): RenderItem(_shape,_actor,_color), transform(NULL) {}
+	RenderItemP() : RenderItem(), transform(NULL) { RegisterRenderItem(this); }
 
-	RenderItemP() : RenderItem(), transform(NULL) {}
+	void release() override
+	{
+		--references;
+		if (references == 0)
+		{
+			DeregisterRenderItem(this);
+			shape->release();
+			delete this;
+		}
+	}
+
 public:
 	physx::PxTransform* transform;
 };
@@ -77,13 +89,24 @@ class RenderItemO : public RenderItem
 {
 	friend class Scene;
 private:
-	RenderItemO(physx::PxShape* _shape, TransformSPointer _trans, const Vector4& _color) : RenderItem(_shape, _color), transform(_trans) {}
+	RenderItemO(physx::PxShape* _shape, TransformSPointer _trans, const Vector4& _color) : RenderItem(_shape, _color), transform(_trans) { RegisterRenderItem(this); }
 
-	RenderItemO(physx::PxShape* _shape, const Vector4& _color) : RenderItem(_shape, _color), transform(NULL) {}
+	RenderItemO(physx::PxShape* _shape, const Vector4& _color) : RenderItem(_shape, _color), transform(NULL) { RegisterRenderItem(this); }
 
-	RenderItemO(physx::PxShape* _shape, const physx::PxRigidActor* _actor, const Vector4& _color) : RenderItem(_shape, _actor, _color), transform(NULL) {}
+	RenderItemO(physx::PxShape* _shape, const physx::PxRigidActor* _actor, const Vector4& _color) : RenderItem(_shape, _actor, _color), transform(NULL) { RegisterRenderItem(this); }
 
-	RenderItemO() : RenderItem(), transform(NULL) {}
+	RenderItemO() : RenderItem(), transform(NULL) { RegisterRenderItem(this); }
+
+	void release() override
+	{
+		--references;
+		if (references == 0)
+		{
+			DeregisterRenderItem(this);
+			shape->release();
+			delete this;
+		}
+	}
 
 	public:
 	std::shared_ptr<physx::PxTransform> transform;

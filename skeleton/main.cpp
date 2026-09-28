@@ -25,6 +25,7 @@
 #include "Scene_0.h"
 #include "Scene_0B.h"
 #include "Scene_0C.h"
+#include "Scene_1_1.h"
 
 #include <foundation/PxSimpleTypes.h>
 #include <PxPhysicsVersion.h> // <- Macros for PhysX version checking
@@ -105,6 +106,7 @@ void initPhysics(bool interactive)
 	SceneManager::instance().registerScene<Scene_0>("EscenaCero");
 	SceneManager::instance().registerScene<Scene_0B>("EscenaCeroB");
 	SceneManager::instance().registerScene<Scene_0C>("EscenaCeroC");
+	SceneManager::instance().registerScene<Scene_1_1>("Escena1-1");
 	// Cargar la escena inicial
 	SceneManager::instance().changeScene("EscenaVacia");
 	
@@ -129,10 +131,10 @@ void stepPhysics(bool interactive, double t)
 		// simulate() arranca la simulación de forma asíncrona en el hilo de físicas
 		gScene->simulate(static_cast<PxReal>(gFixedTimestep));
 
-		SceneManager::instance().fixedUpdate(t);
-
 		// fetchResults(true) bloquea el hilo de renderizado hasta que la física termine.
 		// En prácticas avanzadas es vital para que el renderizado no lea datos corruptos.
+		SceneManager::instance().fixedUpdate(t);
+
 		gScene->fetchResults(true);
 
 		gPhysicsTimeAccumulator -= gFixedTimestep;

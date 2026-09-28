@@ -1,12 +1,14 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include "PxPhysicsAPI.h"
 #include "Vector3D.h"
 #include "RenderUtils.hpp"
 #include "Particle.h"
 #include <unordered_set>
 #include <memory>
+#include <iostream>
 // Clase base para las distintas escenas de la aplicación.
 // Provee la interfaz mínima que debe implementar cualquier escena:
 // inicialización, limpieza, actualización por frame y manejo de teclado.
@@ -27,6 +29,10 @@ public:
 			ri->release();
 		}
 		nonParticleRenderItems.clear();
+		for (Particle* p : particles) {
+			delete p;
+		}
+		particles.clear();
 	}
 	RenderItemO* addRenderItem(physx::PxShape* _shape, const Vector3& _pos, const physx::PxQuat& quat, const Vector4& _color)
 	{
@@ -71,10 +77,12 @@ public:
 	}
 
 	Particle* addParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97) {
-		particles.emplace_back(pos,v,a,damping);
+		particles.push_back(new Particle(pos, v, a, damping));
+		return particles.back();
 	}
 	Particle* addParticle(const Vector3D& pos, double damping, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }) {
-		particles.emplace_back(pos, v, a, damping);
+		particles.push_back(new Particle(pos, v, a, damping)); 
+		return particles.back();
 	}
 	//Invariantes: el todo renderItem existente debe estar en una partícula o en la lista de la escena y todo renderItem de la lista de la escena existe.
 	bool removeRenderItem(RenderItemO*& ri) {
@@ -89,7 +97,7 @@ public:
 	// Actualiza la lógica de la escena.
 	// dt: tiempo en segundos transcurrido desde la última actualización.
 	virtual void update(double dt) {};
-	void physicsUpdate(double dt) { for (Particle& p : particles) { p.Integrate(dt); } }
+	void physicsUpdate(double dt) { for (Particle* p : particles) { p->Integrate(dt); } }
 	// Manejo de pulsación de tecla.
 	// Se recibe la tecla pulsada y la transformada de la cámara para
 	// permitir respuestas dependientes de la orientación/posición de la cámara.
@@ -105,5 +113,5 @@ protected:
 private:
 	std::unordered_set<RenderItemO*> nonParticleRenderItems;
 	std::vector<TransformSPointer> nonParticleTransforms;
-	std::vector<Particle> particles;
+	std::vector<Particle*> particles;
 };

@@ -45,7 +45,7 @@ void SceneManager::update(double dt) {
 }
 
 void SceneManager::fixedUpdate(double dt) {
-    m_currentScene->physicsUpdate(dt);
+    if(m_currentScene) m_currentScene->physicsUpdate(dt);
 }
 
 // Reenvía eventos de teclado a la escena actual. Mantener este método simple
@@ -66,6 +66,10 @@ void SceneManager::keyPress(unsigned char key, const physx::PxTransform& cameraT
     }
     if (key == '2') {
         changeScene("EscenaCeroC");
+        return; // Consumimos el evento para que no interfiera con la escena
+    }
+    if (key == '3') {
+        changeScene("Escena1-1");
         return; // Consumimos el evento para que no interfiera con la escena
     }
 
