@@ -4,10 +4,21 @@
 #include "PxPhysicsAPI.h"
 #include "core.hpp"
 #include <memory>
+#include <type_traits>
+
+class RenderItemO;
+class RenderItemP;
 
 class RenderItem;
-void RegisterRenderItem(const RenderItem* _item);
-void DeregisterRenderItem(const RenderItem* _item);
+void RegisterRenderItem(const RenderItemO* _item);
+void DeregisterRenderItem(const RenderItemO* _item);
+void RegisterRenderItem(const RenderItemP* _item);
+void DeregisterRenderItem(const RenderItemP* _item);
+
+
+
+
+
 using TransformSPointer = std::shared_ptr<physx::PxTransform>;
 
 class RenderItem
@@ -18,14 +29,12 @@ protected:
 		shape(_shape), actor(NULL), color(_color), references(1)
 	{
 		shape->acquireReference();
-		RegisterRenderItem(this);
 	}
 
 	RenderItem(physx::PxShape* _shape, const physx::PxRigidActor* _actor, const Vector4& _color) :
 		shape(_shape), actor(_actor), color(_color), references(1)
 	{
 		shape->acquireReference();
-		RegisterRenderItem(this);
 	}
 
 	RenderItem() : shape(NULL), references(1) {}
@@ -37,14 +46,6 @@ protected:
 		++references;
 	}
 
-	void release()
-	{
-		--references;
-		if (references == 0)
-		{
-			shape->release();
-			delete this;
-		}
 	virtual void release() = 0;
 	
 public:
@@ -65,7 +66,6 @@ private:
 
 	RenderItemP(physx::PxShape* _shape,  const Vector4& _color) : RenderItem(_shape, _color), transform(NULL) { RegisterRenderItem(this); }
 
-	RenderItemP(physx::PxShape* _shape,  const Vector4& _color) : RenderItem(_shape, _color), transform(NULL) {}
 	RenderItemP(physx::PxShape* _shape, const physx::PxRigidActor* _actor, const Vector4& _color): RenderItem(_shape,_actor,_color), transform(NULL) { RegisterRenderItem(this); }
 
 	RenderItemP() : RenderItem(), transform(NULL) { RegisterRenderItem(this); }
