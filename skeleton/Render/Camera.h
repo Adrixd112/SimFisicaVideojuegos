@@ -51,8 +51,12 @@ public:
 private:
 	physx::PxVec3	mEye;
 	physx::PxVec3	mDir;
+	physx::PxVec3	mUp;
 	int				mMouseX;
 	int				mMouseY;
+	GLdouble fovy;
+	GLdouble zNear;
+	GLdouble zFar;
 };
 
 

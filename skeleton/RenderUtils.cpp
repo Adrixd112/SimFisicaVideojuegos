@@ -82,7 +82,7 @@ void renderCallback()
 #ifdef FIXED_STEP
 	if (t < (1.0f / 30.0f))
 	{
-		fprintf(stderr, "Time: %f\n", stepTime);
+		//fprintf(stderr, "Time: %f\n", stepTime);
 		stepTime += t;
 	}
 	else
@@ -90,7 +90,7 @@ void renderCallback()
 
 	if (stepTime >= (1.0f / 30.0f))
 	{
-		stepPhysics(true, stepTime);
+		
 		stepTime = 0.0f;
 	}
 #else
@@ -115,6 +115,7 @@ void renderCallback()
 		}
 		renderShape(*obj->shape, objTransform ? *objTransform : physx::PxTransform(PxIdentity), obj->color);
 	}
+
 	for (auto it = gRenderItemsP.begin(); it != gRenderItemsP.end(); ++it)
 	{
 		const RenderItemP* obj = (*it);
