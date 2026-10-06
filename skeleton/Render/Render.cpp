@@ -28,6 +28,7 @@
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
 #include "Render.h"
+#include "Camera.h"
 #include <assert.h>
 
 using namespace physx;
@@ -282,7 +283,7 @@ void setupDefaultRenderState()
 }
 
 
-void startRender(Camera* camera)
+void startRender(const Camera* camera)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -293,10 +294,29 @@ void startRender(Camera* camera)
 	// Setup camera
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60.0, GLdouble(glutGet(GLUT_WINDOW_WIDTH)) / GLdouble(glutGet(GLUT_WINDOW_HEIGHT)), GLdouble(clipNear), GLdouble(clipFar));
+
+	if(camera->isOrthographic())
+	{
+		glOrtho(
+			camera->getOrthoSize()* GLdouble(glutGet(GLUT_WINDOW_WIDTH))/-2,
+			camera->getOrthoSize() * GLdouble(glutGet(GLUT_WINDOW_WIDTH)) /2,
+			camera->getOrthoSize() * GLdouble(glutGet(GLUT_WINDOW_HEIGHT))/-2,
+			camera->getOrthoSize() * GLdouble(glutGet(GLUT_WINDOW_HEIGHT)) / 2,
+			camera->getZNear(),
+			camera->getZFar()
+		);
+	}
+	else
+	{
+		gluPerspective(camera->getFovY(), GLdouble(glutGet(GLUT_WINDOW_WIDTH)) / GLdouble(glutGet(GLUT_WINDOW_HEIGHT)), camera->getZNear(), camera->getZFar());
+	}
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	const auto cameraEye = camera->getEye();
+	const auto cameraDir = camera->getDir();
+
 	gluLookAt(GLdouble(cameraEye.x), GLdouble(cameraEye.y), GLdouble(cameraEye.z), GLdouble(cameraEye.x + cameraDir.x), GLdouble(cameraEye.y + cameraDir.y), GLdouble(cameraEye.z + cameraDir.z), 0.0, 1.0, 0.0);
 
 	glColor4f(0.4f, 0.4f, 0.4f, 1.0f);

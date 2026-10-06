@@ -37,6 +37,7 @@ void SceneManager::applyPendingSceneChange() {
 void SceneManager::update(double dt) {
     if (m_hasPendingChange) {
         applyPendingSceneChange();
+        SetCamera(m_currentScene->getCamera());
     }
 
     if (m_currentScene) {
@@ -72,6 +73,11 @@ void SceneManager::keyPress(unsigned char key, const physx::PxTransform& cameraT
         changeScene("Escena1-1");
         return; // Consumimos el evento para que no interfiera con la escena
     }
+    if (key == '4') {
+        changeScene("Escena1-2");
+        return; // Consumimos el evento para que no interfiera con la escena
+    }
+    
 
     // Si no es una tecla de navegación global, se la pasamos a la escena activa
     if (m_currentScene != nullptr) {

@@ -5,6 +5,10 @@
 #include "core.hpp"
 #include "RenderUtils.hpp"
 
+#ifdef _DEBUG
+	#include <iostream>
+#endif // DEBUG
+
 
 using namespace physx;
 
@@ -48,6 +52,7 @@ double GetCounter()
 namespace
 {
 	Camera*	sCamera;
+	Camera* defaultCamera;
 
 void motionCallback(int x, int y)
 {
@@ -56,6 +61,7 @@ void motionCallback(int x, int y)
 
 void keyboardCallback(unsigned char key, int x, int y)
 {
+
 	if(key==27)
 		exit(0);
 
@@ -97,7 +103,7 @@ void renderCallback()
 	stepPhysics(true, t);
 #endif
 
-	startRender(sCamera->getEye(), sCamera->getDir());
+	startRender(sCamera);
 
 	//fprintf(stderr, "Num Render Items: %d\n", static_cast<int>(gRenderItems.size()));
 	for (auto it = gRenderItemsO.begin(); it != gRenderItemsO.end(); ++it)
@@ -155,8 +161,8 @@ void exitCallback(void)
 void renderLoop()
 {
 	StartCounter();
-	sCamera = new Camera(PxVec3(50.0f, 50.0f, 50.0f), PxVec3(-0.6f,-0.2f,-0.7f));
-
+	defaultCamera = new Camera(PxVec3(50.0f, 50.0f, 50.0f), PxVec3(-0.6f, -0.2f, -0.7f));
+	sCamera = defaultCamera;
 	setupDefaultWindow("Simulacion Fisica Videojuegos");
 	setupDefaultRenderState();
 
@@ -202,6 +208,14 @@ double GetLastTime()
 Camera* GetCamera()
 {
 	return sCamera;
+}
+
+void SetCamera(Camera* camera)
+{
+	if (camera) 
+		sCamera = camera;
+	else 
+		sCamera = defaultCamera;
 }
 
 PxShape* CreateShape(const PxGeometry& geo, const PxMaterial* mat)

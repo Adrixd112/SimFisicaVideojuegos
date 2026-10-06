@@ -16,7 +16,7 @@ class Scene
 {
 public:
 	// Construye la escena con un nombre identificador.
-	explicit Scene(std::string name) : m_name(std::move(name)) {}
+	explicit Scene(std::string name) : m_name(std::move(name)),sCamera(nullptr) {}
 	virtual ~Scene() = default;
 
 	// Inicializa recursos de la escena (físicos, gráficos, datos, ...).
@@ -106,10 +106,13 @@ public:
 
 	// Devuelve el nombre identificador de la escena.
 	[[nodiscard]] const std::string& getName() const { return m_name; }
+	Camera* getCamera() const { return sCamera; };
+
 
 protected:
 	// Nombre de la escena (útil para identificarla en menús o logs).
 	std::string m_name;
+	Camera* sCamera;
 private:
 	std::unordered_set<RenderItemO*> nonParticleRenderItems;
 	std::vector<TransformSPointer> nonParticleTransforms;

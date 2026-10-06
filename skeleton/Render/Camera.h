@@ -32,18 +32,29 @@
 #define PHYSX_SNIPPET_CAMERA_H
 
 #include "foundation/PxTransform.h"
-
+#include "Render.h"
 namespace Snippets
 {
 class Camera
 {
 public:
-	Camera(const physx::PxVec3 &eye, const physx::PxVec3& dir);
+	Camera(const physx::PxVec3 &eye, const physx::PxVec3& dir, bool isOrtho = false, const GLdouble& orthoSize = 1, const GLdouble& zNear = 1.f, const GLdouble& zFar = 10000.f, const GLdouble& fovY = 60.f);
 
 	void				handleMouse(int button, int state, int x, int y);
 	bool				handleKey(unsigned char key, int x, int y, float speed = 1.0f);
 	void				handleMotion(int x, int y);
 	void				handleAnalogMove(float x, float y);
+
+	bool isOrthographic() const;
+	void setOrthographic(bool isOrtographic);
+	GLdouble getOrthoSize() const;
+	void setOrthoSize(GLdouble size);
+	GLdouble getFovY() const;
+	void setFovY(GLdouble fovy);
+	GLdouble getZNear() const;
+	void setZNear(GLdouble zNear);
+	GLdouble getZFar() const;
+	void setZFar(GLdouble zFar);
 
 	physx::PxVec3		getEye()	const;
 	physx::PxVec3		getDir()	const;
@@ -54,9 +65,11 @@ private:
 	physx::PxVec3	mUp;
 	int				mMouseX;
 	int				mMouseY;
-	GLdouble fovy;
+	GLdouble fovY;
 	GLdouble zNear;
 	GLdouble zFar;
+	GLdouble orthoSize;
+	bool orthographic;
 };
 
 
