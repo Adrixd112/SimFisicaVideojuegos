@@ -18,7 +18,7 @@ void SceneManager::applyPendingSceneChange() {
     if (!m_hasPendingChange) return;
 
     if (m_currentScene) {
-        m_currentScene->Scene::cleanup();
+        m_currentScene->Scene::cleanupSceneParent();
         m_currentScene->cleanup();
     }
 
@@ -37,7 +37,7 @@ void SceneManager::applyPendingSceneChange() {
 void SceneManager::update(double dt) {
     if (m_hasPendingChange) {
         applyPendingSceneChange();
-        SetCamera(m_currentScene->getCamera());
+        SetCamera(m_currentScene->getSceneCamera());
     }
 
     if (m_currentScene) {
@@ -77,10 +77,14 @@ void SceneManager::keyPress(unsigned char key, const physx::PxTransform& cameraT
         changeScene("Escena1-2");
         return; // Consumimos el evento para que no interfiera con la escena
     }
-    
+    if (key == '5') {
+        changeScene("Escena1-2b");
+        return; // Consumimos el evento para que no interfiera con la escena
+    }
 
     // Si no es una tecla de navegación global, se la pasamos a la escena activa
     if (m_currentScene != nullptr) {
+        m_currentScene->keyPressSceneParent(key, cameraTransform);
         m_currentScene->keyPress(key, cameraTransform);
     }
 }

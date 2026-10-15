@@ -275,6 +275,7 @@
     <ClCompile Include="Scene_0C.cpp" />
     <ClCompile Include="Scene_1_1.cpp" />
     <ClCompile Include="Scene_1_2.cpp" />
+    <ClCompile Include="Scene_1_2b.cpp" />
     <ClCompile Include="Vector3D.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -293,6 +294,7 @@
     <ClInclude Include="Scene_0C.h" />
     <ClInclude Include="Scene_1_1.h" />
     <ClInclude Include="Scene_1_2.h" />
+    <ClInclude Include="Scene_1_2b.h" />
     <ClInclude Include="Vector3D.h" />
   </ItemGroup>
   <ItemGroup>

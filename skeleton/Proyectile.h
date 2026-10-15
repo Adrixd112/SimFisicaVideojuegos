@@ -11,7 +11,7 @@ public:
 
 	double wReal; // 1/m
 
-	double vRealProp;
+	double vRealProp; //prop vsimulada/vreal
 
 private:
 	void RecalculateSimulateds();
@@ -23,6 +23,9 @@ protected:
 	Proyectile(const Vector3D& pos, double vRealProp, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97, double w = 1);
 	Proyectile(const Vector3D& pos,  double damping, double vRealProp, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 });
 	Proyectile(double w, const Vector3D& pos, double vRealProp, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97);
+	Proyectile(double m,const Vector3D& pos, const Vector3D& v = { 0,0,0 }, double vReal = 10, const Vector3D& a = { 0,0,0 }, double damping = 0.97);
+	Proyectile(double m, const Vector3D& pos, const Vector3D& dirV, double vReal, double vSim, const Vector3D& a = { 0,0,0 }, double damping = 0.97);
+
 	~Proyectile();
 };
 

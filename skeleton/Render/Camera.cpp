@@ -41,7 +41,7 @@ using namespace physx;
 namespace Snippets
 {
 
-	Camera::Camera(const PxVec3& eye, const PxVec3& dir, bool isOrtho, const GLdouble& orthoSize, const GLdouble& zNear, const GLdouble& zFar, const GLdouble& fovY) :fovY(fovY), zNear(zNear), zFar(zFar), orthographic(isOrtho), orthoSize(orthoSize)
+	Camera::Camera(const PxVec3& eye, const PxVec3& dir, bool isOrtho, const GLdouble& orthoSize, const GLdouble& zNear, const GLdouble& zFar, const GLdouble& fovY) :fovY(fovY), zNear(zNear), zFar(zFar), orthographic(isOrtho), orthoSize(orthoSize),mUp(0,1,0)
 	{
 		mEye = eye;
 		mDir = dir.getNormalized();
@@ -59,11 +59,10 @@ namespace Snippets
 
 	bool Camera::handleKey(unsigned char key, int x, int y, float speed)
 	{
-		std::cout << orthographic << '\n';
 		PX_UNUSED(x);
 		PX_UNUSED(y);
 
-		PxVec3 viewY = mDir.cross(PxVec3(0, 1, 0)).getNormalized();
+		PxVec3 viewY = mDir.cross(mUp).getNormalized();
 		PxVec3 mUpward = viewY.cross(mDir).getNormalized();
 		switch (toupper(key))
 		{
@@ -94,7 +93,7 @@ namespace Snippets
 
 	void Camera::handleAnalogMove(float x, float y)
 	{
-		PxVec3 viewY = mDir.cross(PxVec3(0, 1, 0)).getNormalized();
+		PxVec3 viewY = mDir.cross(mUp).getNormalized();
 		mEye += mDir * y * (orthographic ? 2 * orthoSize : 1);
 		mEye += viewY * x * (orthographic ? 2 * orthoSize : 1);
 	}

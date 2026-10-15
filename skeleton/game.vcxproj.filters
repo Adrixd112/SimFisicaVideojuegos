@@ -20,6 +20,7 @@
     <ClCompile Include="Scene_1_1.cpp" />
     <ClCompile Include="Scene_1_2.cpp" />
     <ClCompile Include="Proyectile.cpp" />
+    <ClCompile Include="Scene_1_2b.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -42,6 +43,7 @@
     <ClInclude Include="Scene_1_1.h" />
     <ClInclude Include="Scene_1_2.h" />
     <ClInclude Include="Proyectile.h" />
+    <ClInclude Include="Scene_1_2b.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

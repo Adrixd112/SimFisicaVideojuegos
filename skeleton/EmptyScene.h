@@ -27,7 +27,7 @@ public:
         }
     }
 
-    void cleanup() override {
+    void cleanupSceneParent() override {
 
     }
 

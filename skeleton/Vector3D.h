@@ -1,6 +1,7 @@
 #pragma once
 #include <PxPhysicsAPI.h>
 #include <cmath>
+#include<iostream>
 class Vector3D
 {
 public:
@@ -37,6 +38,11 @@ public:
 
 	operator physx::PxVec3() const { return physx::PxVec3(x, y, z); }
 
-};
 
+
+};
+inline std::ostream& operator<<(std::ostream& os, const Vector3D& v) {
+	os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+	return os;
+}
 inline Vector3D operator*(float scalar, const Vector3D& v) noexcept { return v * scalar; }

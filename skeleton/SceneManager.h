@@ -44,6 +44,7 @@ public:
 private:
     SceneManager() = default;
 
+
     // Map de fábricas que crean instancias de Scene identificadas por nombre.
     std::unordered_map<std::string, std::function<std::unique_ptr<Scene>()>> m_factories;
     // Escena actualmente activa.
