@@ -33,7 +33,7 @@ protected:
 	Particle(double w, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97);
 	~Particle();
 
-	void Integrate(double dt);
+	virtual void Integrate(double dt);
 
 	void eulerIntegrate(double dt);
 	void semiEulerIntegrate(double dt);

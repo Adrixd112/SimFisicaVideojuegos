@@ -21,6 +21,9 @@
     <ClCompile Include="Scene_1_2.cpp" />
     <ClCompile Include="Proyectile.cpp" />
     <ClCompile Include="Scene_1_2b.cpp" />
+    <ClCompile Include="ParticleEmitter.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="BetterParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -44,6 +47,9 @@
     <ClInclude Include="Scene_1_2.h" />
     <ClInclude Include="Proyectile.h" />
     <ClInclude Include="Scene_1_2b.h" />
+    <ClInclude Include="ParticleEmitter.h" />
+    <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="BetterParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
