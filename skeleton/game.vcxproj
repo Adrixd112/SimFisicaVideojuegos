@@ -87,6 +87,9 @@
       </PrecompiledHeaderFile>
       <ProgramDataBaseFileName>$(TargetDir)\$(TargetName).pdb</ProgramDataBaseFileName>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalOptions>
@@ -279,6 +282,7 @@
     <ClCompile Include="Scene_1_1.cpp" />
     <ClCompile Include="Scene_1_2.cpp" />
     <ClCompile Include="Scene_1_2b.cpp" />
+    <ClCompile Include="Scene_2.cpp" />
     <ClCompile Include="Vector3D.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +305,7 @@
     <ClInclude Include="Scene_1_1.h" />
     <ClInclude Include="Scene_1_2.h" />
     <ClInclude Include="Scene_1_2b.h" />
+    <ClInclude Include="Scene_2.h" />
     <ClInclude Include="Vector3D.h" />
   </ItemGroup>
   <ItemGroup>

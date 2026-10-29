@@ -5,11 +5,17 @@ void Particle::Integrate(double dt)
 	(this->*integrateFunc)(dt);
 }
 
-Particle::Particle(const Vector3D& pos, const Vector3D& v , const Vector3D& a, double damping,double w):v(v),a(a),damping(damping),hasStartedMoving(false),w(w),integrateFunc(&Particle::semiEulerIntegrate)
+Particle::Particle(const Vector3D& pos, const Vector3D& v , const Vector3D& a, double damping,double w,RenderItemP* renderItem,bool hasRenderItem ):transform(physx::PxTransform(pos)),v(v),a(a),damping(damping),hasStartedMoving(false),w(w),integrateFunc(&Particle::semiEulerIntegrate)
 {
-	transform = physx::PxTransform(pos);
-	physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(0.5f));
-	renderItem = new RenderItemP(shape, &transform, Vector4(0, 0, 0, 1));
+	if(hasRenderItem)
+	{
+		if (renderItem) { this->renderItem = renderItem; }
+		else
+		{
+			physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(0.5f));
+			renderItem = new RenderItemP(shape, &transform, Vector4(0, 0, 0, 1));
+		}
+	}
 }
 Particle::Particle(const Vector3D& pos, double damping, const Vector3D& v, const Vector3D& a): Particle(pos, v, a, damping) {
 	

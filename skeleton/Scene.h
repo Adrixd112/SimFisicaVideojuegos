@@ -8,8 +8,10 @@
 #include "Particle.h"
 #include "Proyectile.h"
 #include <unordered_set>
+#include <unordered_map>
 #include <memory>
 #include <iostream>
+#include "ParticleSystem.h"
 // Clase base para las distintas escenas de la aplicación.
 // Provee la interfaz mínima que debe implementar cualquier escena:
 // inicialización, limpieza, actualización por frame y manejo de teclado.
@@ -158,7 +160,7 @@ protected:
 private:
 	
 	
-
+	std::unordered_map<std::string, ParticleSystem> particleSystems;
 	std::unordered_set<RenderItemO*> nonParticleRenderItems;
 	std::vector<TransformSPointer> nonParticleTransforms;
 	std::vector<Particle*> particles;

@@ -18,7 +18,7 @@ public:
 
 	}
 
-	void cleanupSceneParent() override {
+	void cleanup() override {
 
 	}
 private:
