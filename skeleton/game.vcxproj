@@ -283,6 +283,7 @@
     <ClCompile Include="Scene_1_2.cpp" />
     <ClCompile Include="Scene_1_2b.cpp" />
     <ClCompile Include="Scene_2.cpp" />
+    <ClCompile Include="Vector2D.cpp" />
     <ClCompile Include="Vector3D.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -306,6 +307,7 @@
     <ClInclude Include="Scene_1_2.h" />
     <ClInclude Include="Scene_1_2b.h" />
     <ClInclude Include="Scene_2.h" />
+    <ClInclude Include="Vector2D.h" />
     <ClInclude Include="Vector3D.h" />
   </ItemGroup>
   <ItemGroup>

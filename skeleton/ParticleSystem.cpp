@@ -19,12 +19,20 @@ bool ParticleSystem::addParticle(BetterParticle*& particleReturned, const Vector
 	return true;
 }
 
-bool ParticleSystem::addEmitter(ParticleEmitter*& emitter)
+bool ParticleSystem::addParticle(const BetterParticle& particle, BetterParticle*& particleReturned)
 {
-	if (emptyEmitters.empty())	return false;
-	emitters[emptyEmitters.front()].~ParticleEmitter();
-	emitters[emptyEmitters.front()] = *emitter;
-	emitter = &emitters[emptyEmitters.front()];
+	if (emptySpaces.empty())	return false;
+	particles[emptySpaces.front()].~BetterParticle();
+	particles[emptySpaces.front()] = particle;
+	particleReturned = &particles[emptySpaces.front()];
+	return true;
+}
+
+bool ParticleSystem::addParticle(const BetterParticle& particle)
+{
+	if (emptySpaces.empty())	return false;
+	particles[emptySpaces.front()].~BetterParticle();
+	particles[emptySpaces.front()] = particle;
 	return true;
 }
 

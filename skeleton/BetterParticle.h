@@ -9,7 +9,9 @@
 //Usar funciones con nombre si
 class BetterParticle :public Particle
 {
+	friend class Scene;
 	friend class ParticleSystem;
+
 protected:
 	bool alive;
 	float deathCountdown;
@@ -89,4 +91,3 @@ public:
 	
 
 };
-

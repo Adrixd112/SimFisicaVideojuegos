@@ -17,6 +17,14 @@
 // inicialización, limpieza, actualización por frame y manejo de teclado.
 class Scene
 {
+	template<typename BP>
+	using IsOrInheritsFromBetterParticle = std::enable_if_t<
+		std::is_base_of<BetterParticle, BP>::value ||
+		std::is_same<BP, BetterParticle>::value,
+		BP
+	>;
+
+
 public:
 	// Construye la escena con un nombre identificador.
 	explicit Scene(std::string name) : m_name(std::move(name)), sCamera(nullptr) { paused = false; }
@@ -36,6 +44,7 @@ public:
 			delete p;
 		}
 		particles.clear();
+		particleSystems.clear();
 	}
 	virtual void cleanup() {}
 	RenderItemO* addRenderItem(physx::PxShape* _shape, const Vector3& _pos, const physx::PxQuat& quat, const Vector4& _color)
@@ -88,6 +97,7 @@ public:
 		particles.push_back(new Particle(pos, v, a, damping));
 		return particles.back();
 	}
+
 	Proyectile* addProyectile(const Vector3D& pos, double vRealProp, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97, double w = 1) {
 		Proyectile* p = new Proyectile(pos, vRealProp, v, a, damping, w);
 		particles.push_back(p);
@@ -115,6 +125,28 @@ public:
 		Proyectile* p = new Proyectile(m, pos, dirV, vReal, vSim, a,damping);
 		particles.push_back(p);
 		return p;
+	}
+
+	bool addParticleSystem(std::string name) {
+		if (particleSystems.find(name) == particleSystems.end()) return false;
+		particleSystems[name];
+	}
+
+	ParticleSystem* GetParticleSystem(std::string name) {
+		if (particleSystems.find(name) == particleSystems.end()) return nullptr;
+
+		return &particleSystems[name];
+	}
+
+	template <typename BP>
+	IsOrInheritsFromBetterParticle<BP> GenerateBetterParticlePrefab(const Vector3D& pos = {0,0,0}, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
+		
+		return BP(pos, v, a, deathCountdown, damping, w);
+	}
+
+	template <typename BP>
+	IsOrInheritsFromBetterParticle<BP> GenerateBetterParticlePrefab(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
+		return BP(renderItem,pos, v, a, deathCountdown, damping, w);
 	}
 
 	//Invariantes: el todo renderItem existente debe estar en una partícula o en la lista de la escena y todo renderItem de la lista de la escena existe.
@@ -159,10 +191,8 @@ protected:
 	bool paused;
 private:
 	
-	
 	std::unordered_map<std::string, ParticleSystem> particleSystems;
 	std::unordered_set<RenderItemO*> nonParticleRenderItems;
 	std::vector<TransformSPointer> nonParticleTransforms;
 	std::vector<Particle*> particles;
-	
 };
