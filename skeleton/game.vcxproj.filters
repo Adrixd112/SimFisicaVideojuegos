@@ -25,7 +25,6 @@
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="BetterParticle.cpp" />
     <ClCompile Include="Scene_2.cpp" />
-    <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -53,7 +52,7 @@
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="BetterParticle.h" />
     <ClInclude Include="Scene_2.h" />
-    <ClInclude Include="Vector2D.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

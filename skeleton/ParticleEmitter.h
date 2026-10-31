@@ -4,6 +4,7 @@
 #include <random>
 class ParticleEmitter : public BetterParticle
 {
+	friend class Scene;
 private:
 	static std::mt19937 generator;
 	static std::uniform_real_distribution<float> uDistribution;
@@ -33,7 +34,7 @@ protected:
 
 class ParticleEmitter_Rectangular_Ortogonal : public ParticleEmitter
 {
-
+	friend class Scene;
 protected:
 	ParticleEmitter_Rectangular_Ortogonal(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = {0,0,0}, const Vector3D& a = {0,0,0}, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(renderItem, pos, v, a, deathCountdown, damping, w) {};
 	ParticleEmitter_Rectangular_Ortogonal(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(pos, v, a, deathCountdown, damping, w) {};
@@ -44,7 +45,7 @@ public:
 
 class ParticleEmitter_Conical : public ParticleEmitter
 {
-
+	friend class Scene;
 protected:
 	ParticleEmitter_Conical(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(renderItem, pos, v, a, deathCountdown, damping, w) {};
 	ParticleEmitter_Conical(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(pos, v, a, deathCountdown, damping, w) {};

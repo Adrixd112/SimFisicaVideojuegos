@@ -13,26 +13,29 @@ ParticleSystem::ParticleSystem() :occupancy(0)
 bool ParticleSystem::addParticle(BetterParticle*& particleReturned, const Vector3D& pos, const Vector3D& v, const Vector3D& a, float deathCountdown, double damping, double w)
 {
 	if (emptySpaces.empty())	return false;
-	particles[emptySpaces.front()].~BetterParticle();
-	particles[emptySpaces.front()] = BetterParticle(pos, v, a, deathCountdown, damping, w);
-	particleReturned = &particles[emptySpaces.front()];
+	particles[emptySpaces.top()].~BetterParticle();
+	particles[emptySpaces.top()] = BetterParticle(pos, v, a, deathCountdown, damping, w);
+	particleReturned = &particles[emptySpaces.top()];
+	emptySpaces.pop();
 	return true;
 }
 
 bool ParticleSystem::addParticle(const BetterParticle& particle, BetterParticle*& particleReturned)
 {
 	if (emptySpaces.empty())	return false;
-	particles[emptySpaces.front()].~BetterParticle();
-	particles[emptySpaces.front()] = particle;
-	particleReturned = &particles[emptySpaces.front()];
+	particles[emptySpaces.top()].~BetterParticle();
+	particles[emptySpaces.top()] = particle;
+	particleReturned = &particles[emptySpaces.top()];
+	emptySpaces.pop();
 	return true;
 }
 
 bool ParticleSystem::addParticle(const BetterParticle& particle)
 {
 	if (emptySpaces.empty())	return false;
-	particles[emptySpaces.front()].~BetterParticle();
-	particles[emptySpaces.front()] = particle;
+	particles[emptySpaces.top()].~BetterParticle();
+	particles[emptySpaces.top()] = particle;
+	emptySpaces.pop();
 	return true;
 }
 

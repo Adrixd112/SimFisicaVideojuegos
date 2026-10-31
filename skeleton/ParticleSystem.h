@@ -2,8 +2,8 @@
 #include "ParticleEmitter.h";
 #include "BetterParticle.h";
 #include <vector>;
-#include <array>;
-#include <queue>;
+#include "Utils.h";
+
 
 constexpr size_t STATIC_MAX_PARTICLE_COUNT = 1000;
 
@@ -11,7 +11,7 @@ class ParticleSystem
 {
 	BetterParticle particles[STATIC_MAX_PARTICLE_COUNT];
 
-	std::queue<int,std::array<int,STATIC_MAX_PARTICLE_COUNT>> emptySpaces;
+	Stack<int,STATIC_MAX_PARTICLE_COUNT> emptySpaces;
 
 
 
@@ -20,9 +20,7 @@ class ParticleSystem
 public:
 
 	ParticleSystem();
-	~ParticleSystem() {
-		delete[] particles;
-	}
+	~ParticleSystem() {}
 	bool addParticle(BetterParticle*& particleReturned,const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1);
 
 

@@ -1,5 +1,6 @@
 #include "Vector3D.h"
 
+
 Vector3D Vector3D::RotateVectorToDirPlane(const Vector3D& planeRelativeCoordinates, const Vector3D& dirFin, const Vector3D& dirIni)
 {
 	Vector3D axis = dirIni.cross(dirFin);
