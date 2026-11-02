@@ -4,87 +4,91 @@
 // Solicita el cambio de escena. Si el nombre no está registrado, se escribe
 // un error en stderr y la solicitud se ignora.
 void SceneManager::changeScene(const std::string& name) {
-    if (m_factories.find(name) == m_factories.end()) {
-        std::cerr << "[SceneManager Error] Escena no registrada: " << name << "\n";
-        return;
-    }
-    m_pendingSceneName = name;
-    m_hasPendingChange = true;
+	if (m_factories.find(name) == m_factories.end()) {
+		std::cerr << "[SceneManager Error] Escena no registrada: " << name << "\n";
+		return;
+	}
+	m_pendingSceneName = name;
+	m_hasPendingChange = true;
 }
 
 // Realiza la transición a la escena pendiente: limpia la escena actual,
 // crea la nueva usando la fábrica y la inicializa.
 void SceneManager::applyPendingSceneChange() {
-    if (!m_hasPendingChange) return;
+	if (!m_hasPendingChange) return;
 
-    if (m_currentScene) {
-        m_currentScene->Scene::cleanupSceneParent();
-        m_currentScene->cleanup();
-    }
+	if (m_currentScene) {
+		m_currentScene->Scene::cleanupSceneParent();
+		m_currentScene->cleanup();
+	}
 
-    m_currentScene = m_factories[m_pendingSceneName]();
-    if (m_currentScene) {
-        m_currentScene->init();
-        std::cout << "[SceneManager] Escena cargada: " << m_pendingSceneName << "\n";
-    }
+	m_currentScene = m_factories[m_pendingSceneName]();
+	if (m_currentScene) {
+		m_currentScene->init();
+		std::cout << "[SceneManager] Escena cargada: " << m_pendingSceneName << "\n";
+	}
 
-    m_hasPendingChange = false;
-    m_pendingSceneName.clear();
+	m_hasPendingChange = false;
+	m_pendingSceneName.clear();
 }
 
 // Llamada por frame: aplica el cambio pendiente antes de actualizar la escena
 // para evitar modificar la escena mientras está siendo usada.
 void SceneManager::update(double dt) {
-    if (m_hasPendingChange) {
-        applyPendingSceneChange();
-        SetCamera(m_currentScene->getSceneCamera());
-    }
+	if (m_hasPendingChange) {
+		applyPendingSceneChange();
+		SetCamera(m_currentScene->getSceneCamera());
+	}
 
-    if (m_currentScene) {
-        m_currentScene->update(dt);
-    }
+	if (m_currentScene) {
+		m_currentScene->update(dt);
+	}
 }
 
 void SceneManager::fixedUpdate(double dt) {
-    if(m_currentScene) m_currentScene->physicsUpdate(dt);
+	if (m_currentScene) m_currentScene->physicsUpdate(dt);
 }
 
 // Reenvía eventos de teclado a la escena actual. Mantener este método simple
 // permite centralizar atajos globales si se desea en el futuro.
 void SceneManager::keyPress(unsigned char key, const physx::PxTransform& cameraTransform) {
-    // Teclas globales de navegación entre prácticas
-    if (key == 'V') {
-        changeScene("EscenaVacia");
-        return; // Consumimos el evento para que no interfiera con la escena
-    }
-    if (key == '0') {
-        changeScene("EscenaCero");
-        return; // Consumimos el evento para que no interfiera con la escena
-    }
-    if (key == '1') {
-        changeScene("EscenaCeroB");
-        return; // Consumimos el evento para que no interfiera con la escena
-    }
-    if (key == '2') {
-        changeScene("EscenaCeroC");
-        return; // Consumimos el evento para que no interfiera con la escena
-    }
-    if (key == '3') {
-        changeScene("Escena1-1");
-        return; // Consumimos el evento para que no interfiera con la escena
-    }
-    if (key == '4') {
-        changeScene("Escena1-2");
-        return; // Consumimos el evento para que no interfiera con la escena
-    }
-    if (key == '5') {
-        changeScene("Escena1-2b");
-        return; // Consumimos el evento para que no interfiera con la escena
-    }
+	// Teclas globales de navegación entre prácticas
+	if (key == 'V') {
+		changeScene("EscenaVacia");
+		return; // Consumimos el evento para que no interfiera con la escena
+	}
+	if (key == '0') {
+		changeScene("EscenaCero");
+		return; // Consumimos el evento para que no interfiera con la escena
+	}
+	if (key == '1') {
+		changeScene("EscenaCeroB");
+		return; // Consumimos el evento para que no interfiera con la escena
+	}
+	if (key == '2') {
+		changeScene("EscenaCeroC");
+		return; // Consumimos el evento para que no interfiera con la escena
+	}
+	if (key == '3') {
+		changeScene("Escena1-1");
+		return; // Consumimos el evento para que no interfiera con la escena
+	}
+	if (key == '4') {
+		changeScene("Escena1-2");
+		return; // Consumimos el evento para que no interfiera con la escena
+	}
+	if (key == '5') {
+		changeScene("Escena1-2b");
+		return; // Consumimos el evento para que no interfiera con la escena
+	}
+	if (key == '6') {
+		changeScene("Escena2");
+		return; // Consumimos el evento para que no interfiera con la escena
+	}
 
-    // Si no es una tecla de navegación global, se la pasamos a la escena activa
-    if (m_currentScene != nullptr) {
-        m_currentScene->keyPressSceneParent(key, cameraTransform);
-        m_currentScene->keyPress(key, cameraTransform);
-    }
+	// Si no es una tecla de navegación global, se la pasamos a la escena activa
+	if (m_currentScene != nullptr) {
+		m_currentScene->keyPressSceneParent(key, cameraTransform);
+		m_currentScene->keyPress(key, cameraTransform);
+	}
 }

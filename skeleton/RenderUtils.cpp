@@ -125,7 +125,7 @@ void renderCallback()
 	for (auto it = gRenderItemsP.begin(); it != gRenderItemsP.end(); ++it)
 	{
 		const RenderItemP* obj = (*it);
-		auto objTransform = obj->transform;
+		auto objTransform = obj->GetTransform();
 		if (!objTransform)
 		{
 			auto actor = obj->actor;

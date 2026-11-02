@@ -2,6 +2,7 @@
 #include "Scene.h"
 class Scene_2 :public Scene
 {
+public:
     explicit Scene_2(std::string name) : Scene(std::move(name)) {}
 
     void init() override;

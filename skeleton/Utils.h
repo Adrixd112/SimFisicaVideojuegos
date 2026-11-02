@@ -25,7 +25,7 @@ public:
 		if(!empty()) tam--;
 	}
 	T top() {
-		return array[tam];
+		return array[tam-1];
 	}
 
 	bool empty() {

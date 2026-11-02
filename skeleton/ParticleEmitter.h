@@ -9,12 +9,14 @@ private:
 	static std::mt19937 generator;
 	static std::uniform_real_distribution<float> uDistribution;
 	static std::normal_distribution<float> nDistribution;
+
 protected:
 	class BetterParticleCopy : public BetterParticle {
 	public:
-		BetterParticleCopy(const BetterParticle& p):BetterParticle(p) {};
+		BetterParticleCopy(const BetterParticle& p) :BetterParticle(p) {};
 		BetterParticleCopy& operator=(const BetterParticle& p) { BetterParticle::operator=(p); }
 	};
+
 protected:
 	ParticleEmitter() {};
 	ParticleEmitter(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1):BetterParticle (renderItem, pos, v , a ,deathCountdown ,  damping ,  w) {};

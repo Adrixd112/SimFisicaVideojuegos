@@ -20,10 +20,11 @@ void DeregisterRenderItem(const RenderItemP* _item);
 
 
 using TransformSPointer = std::shared_ptr<physx::PxTransform>;
+class RenderItem_Prefab;
 
 class RenderItem
 {
-
+	friend class RenderItem_Prefab;
 protected:
 	RenderItem(physx::PxShape* _shape, const Vector4& _color) :
 		shape(_shape), actor(NULL), color(_color), references(1)
@@ -46,7 +47,14 @@ protected:
 		++references;
 	}
 
-	virtual void release() = 0;
+	virtual void release() {
+		--references;
+		if (references == 0)
+		{
+			shape->release();
+			delete this;
+		}
+	};
 	
 public:
 
@@ -80,8 +88,11 @@ private:
 			delete this;
 		}
 	}
-
 public:
+	physx::PxTransform* GetTransform() const {
+		return transform;
+	}
+protected:
 	physx::PxTransform* transform;
 };
 
@@ -111,6 +122,32 @@ private:
 	public:
 	std::shared_ptr<physx::PxTransform> transform;
 };
+
+class RenderItem_Prefab {
+	RenderItem* ri;
+public:
+	RenderItem_Prefab() {};
+	RenderItem_Prefab(physx::PxShape* _shape, const Vector4& _color) { ri = new RenderItem(_shape, _color); }
+	RenderItem_Prefab(RenderItem* renderItem) { ri = new RenderItem(renderItem->shape, renderItem->color); }
+
+	~RenderItem_Prefab() { 
+		ri->release(); 
+	}
+
+	//Shallow copy
+	RenderItem_Prefab(const RenderItem_Prefab& other) { ri = other.ri; ri->addReference(); }
+	bool operator=(const RenderItem_Prefab& other) { ri = other.ri; ri->addReference(); return true; }
+
+	//New RenderItem object, but with the same shape object.
+	RenderItem_Prefab Clone(const RenderItem_Prefab& other) {
+		ri = new RenderItem(other.ri->shape, other.ri->color);
+	}
+
+	RenderItem* GetRenderItem() const {
+		return ri;
+	}
+};
+
 
 double GetLastTime();
 Camera* GetCamera();

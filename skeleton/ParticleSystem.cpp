@@ -5,7 +5,7 @@ ParticleSystem::ParticleSystem() :occupancy(0)
 {
 	for (int i = 0; i < STATIC_MAX_PARTICLE_COUNT;i++) {
 		particles[i] = BetterParticle();
-		emptySpaces.push(i);
+		emptySpaces.push(STATIC_MAX_PARTICLE_COUNT-i-1);
 	}
 
 }

@@ -19,9 +19,13 @@ class Scene
 {
 	template<typename BP>
 	using IsOrInheritsFromBetterParticle = std::enable_if_t<
-		std::is_base_of<BetterParticle, BP>::value ||
+		std::is_base_of<BetterParticle, BP>::value || std::is_same<BP, BetterParticle>::value
+		,
+		typename std::conditional<
 		std::is_same<BP, BetterParticle>::value,
+		BetterParticle::BetterParticlePrefab,
 		BP
+		>::type
 	>;
 
 
@@ -128,14 +132,26 @@ public:
 	}
 
 	bool addParticleSystem(std::string name) {
-		if (particleSystems.find(name) == particleSystems.end()) return false;
+		if (particleSystems.find(name) != particleSystems.end()) 
+		{
+			std::cout << "------WARNING: El particleSystem \"" << name << "\" YA existe------\n";
+			return false;
+		}
 		particleSystems[name];
 	}
 
 	ParticleSystem* GetParticleSystem(std::string name) {
-		if (particleSystems.find(name) == particleSystems.end()) return nullptr;
+		if (particleSystems.find(name) == particleSystems.end()) 
+		{
+			std::cout << "------WARNING: El particleSystem \"" << name << "\" NO existe------\n";
+			return nullptr;
+		}
 
 		return &particleSystems[name];
+	}
+
+	RenderItem_Prefab GenerateRenderItemPrefab(physx::PxShape* _shape, const Vector4& _color) {
+		return RenderItem_Prefab(_shape, _color);
 	}
 
 	template <typename BP>
@@ -149,7 +165,14 @@ public:
 		return BP(renderItem,pos, v, a, deathCountdown, damping, w);
 	}
 
-	//Invariantes: el todo renderItem existente debe estar en una partícula o en la lista de la escena y todo renderItem de la lista de la escena existe.
+	template <typename BP>
+	IsOrInheritsFromBetterParticle<BP> GenerateBetterParticlePrefab(const RenderItem_Prefab& renderItemPrefab, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
+		BP p = BP(pos, v, a, deathCountdown, damping, w);
+		p.Particle::SetRenderItem(renderItemPrefab);
+		return p;
+	}
+
+	//Invariantes: todo renderItem existente debe estar en una partícula o en la lista de la escena y todo renderItem de la lista de la escena existe.
 	bool removeRenderItem(RenderItemO*& ri) {
 		bool found = nonParticleRenderItems.erase(ri); //devuelve int n elems borrados que solo pueden ser 0->false o 1->true
 		if (found)

@@ -5,7 +5,6 @@
 
 
 //Posible mejora: hacer que todos los iguales utilicen un único renderIrem o algo así
-
 //Usar funciones con nombre si
 class BetterParticle :public Particle
 {
@@ -23,7 +22,9 @@ protected:
 	//will die if this returns true
 	std::function<bool()> willDieConditions;
 	std::function<bool()> isSleep;
-	
+
+	//esta clase existe para poder eliminar betterParticle creadas con GenerateBetterParticlePrefab(...) desde las escenas.
+	class BetterParticlePrefab;
 
 protected:
 
@@ -41,8 +42,8 @@ protected:
 	//	isSleep(std::move(isSleep)) 
 	//{}
 
-	//Si le das renderItem, lo pone; sino, genera un renderItem de particle default
-	BetterParticle(RenderItemP* renderItem ,const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1 ) : Particle(pos, v, a, damping, w,renderItem,true),
+	//Si le das renderItem, lo pone; si le dices nullptr, no lo pone.
+	BetterParticle(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : Particle(pos, v, a, damping, w, renderItem, renderItem),
 		alive(true),
 		deathCountdown(deathCountdown),
 		hasLifetime(deathCountdown >= 0),
@@ -53,8 +54,8 @@ protected:
 	{
 	}
 
-	//no le pone renderItem
-	BetterParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : Particle(pos, v, a, damping, w, renderItem, false),
+	//le pone renderItem default
+	BetterParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : Particle(pos, v, a, damping, w, nullptr, true),
 		alive(true),
 		deathCountdown(deathCountdown),
 		hasLifetime(deathCountdown >= 0),
@@ -64,6 +65,18 @@ protected:
 		isSleep(nullptr)
 	{
 	}
+
+	BetterParticle(const BetterParticle& other) : Particle(other),
+		alive(other.alive),
+		deathCountdown(other.deathCountdown),
+		hasLifetime(other.hasLifetime),
+		extraUpdateFunc(other.extraUpdateFunc),
+		onDeath(other.onDeath),
+		willDieConditions(other.willDieConditions),
+		isSleep(other.isSleep)
+	{
+	}
+
 
 public:
 	bool getAlive() { return alive; }
@@ -88,6 +101,28 @@ public:
 	}
 
 	void Integrate(double dt) override;
-	
 
+
+
+};
+
+class BetterParticle::BetterParticlePrefab : public BetterParticle {
+	friend class Scene;
+private:
+	BetterParticlePrefab(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : BetterParticle(renderItem, pos, v, a, deathCountdown, damping, w)
+	{
+		int i = 0;
+	}
+
+	//le pone renderItem default
+	BetterParticlePrefab(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : BetterParticle(pos, v, a, deathCountdown, damping, w)
+	{
+		int i = 0;
+	}
+
+	BetterParticlePrefab(const BetterParticle& other) : BetterParticle(other)
+	{
+	}
+public:
+	~BetterParticlePrefab() {};
 };

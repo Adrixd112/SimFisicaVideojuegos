@@ -1,38 +1,72 @@
 #include "Particle.h"
 
+void Particle::SetRenderItem(const RenderItem_Prefab& rip)
+{
+	if (renderItem) renderItem->release();
+	renderItem = new RenderItemP(rip.GetRenderItem()->shape, &transform, rip.GetRenderItem()->color);
+}
+
+//void Particle::SetRenderItem(const RenderItem* ri)
+//{
+//	if (renderItem) renderItem->release();
+//	renderItem = new RenderItemP(ri->shape, &transform, ri->color);
+//}
+
 void Particle::Integrate(double dt)
 {
 	(this->*integrateFunc)(dt);
 }
 
-Particle::Particle(const Vector3D& pos, const Vector3D& v , const Vector3D& a, double damping,double w,RenderItemP* renderItem,bool hasRenderItem ):transform(physx::PxTransform(pos)),v(v),a(a),damping(damping),hasStartedMoving(false),w(w),integrateFunc(&Particle::semiEulerIntegrate)
+Particle::Particle(const Particle& other) :
+	transform(other.transform),
+	v(other.v),
+	a(other.a),
+	p0(other.p0),
+	w(other.w),
+	damping(other.damping),
+	hasStartedMoving(other.hasStartedMoving),
+	integrateFunc(other.integrateFunc)
 {
-	if(hasRenderItem)
+	if (other.renderItem != nullptr)
+	{
+		renderItem = new RenderItemP(other.renderItem->shape, &transform, other.renderItem->color);
+	}
+};
+
+Particle::Particle(const Vector3D& pos, const Vector3D& v, const Vector3D& a, double damping, double w, RenderItemP* renderItem, bool hasRenderItem) :transform(physx::PxTransform(pos)), v(v), a(a), damping(damping), hasStartedMoving(false), w(w), integrateFunc(&Particle::semiEulerIntegrate)
+{
+	if (hasRenderItem)
 	{
 		if (renderItem) { this->renderItem = renderItem; }
 		else
 		{
 			physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(0.5f));
-			renderItem = new RenderItemP(shape, &transform, Vector4(0, 0, 0, 1));
+			this->renderItem = new RenderItemP(shape, &transform, Vector4(0, 0, 0, 1));
 		}
 	}
+	else {
+		this->renderItem = nullptr;
+	}
 }
-Particle::Particle(const Vector3D& pos, double damping, const Vector3D& v, const Vector3D& a): Particle(pos, v, a, damping) {
-	
+Particle::Particle(const Vector3D& pos, double damping, const Vector3D& v, const Vector3D& a) : Particle(pos, v, a, damping) {
+
 }
 
-Particle::Particle(double w, const Vector3D& pos, const Vector3D& v, const Vector3D& a, double damping):Particle(pos, v, a, damping,w)
+Particle::Particle(double w, const Vector3D& pos, const Vector3D& v, const Vector3D& a, double damping) :Particle(pos, v, a, damping, w)
 {
 }
 
 Particle::~Particle()
 {
-	if(renderItem!=nullptr) renderItem->release();
+	if (renderItem != nullptr) { 
+		renderItem->release(); 
+		renderItem = nullptr; 
+	}
 }
 
 void Particle::eulerIntegrate(double dt)
 {
-	
+
 	p0 = transform.p;
 	transform.p = transform.p + v * dt;
 	v = (v + a * dt) * pow(damping, dt);
@@ -42,7 +76,7 @@ void Particle::eulerIntegrate(double dt)
 void Particle::semiEulerIntegrate(double dt)
 {
 	p0 = transform.p;
-	v = (v + a * dt)*pow(damping,dt);
+	v = (v + a * dt) * pow(damping, dt);
 	transform.p = transform.p + v * dt;
 	hasStartedMoving = true;
 }
@@ -55,7 +89,7 @@ void Particle::verletIntegrate(double dt)
 	}
 	else {
 		const Vector3D ptemp = transform.p;
-		transform.p = transform.p + (transform.p - p0)* pow(damping, dt) + a * pow(dt, 2);
+		transform.p = transform.p + (transform.p - p0) * pow(damping, dt) + a * pow(dt, 2);
 		p0 = ptemp;
 		v = (transform.p - p0) / (2 * dt);
 	}
