@@ -21,12 +21,12 @@ public:
 
 	ParticleSystem();
 	~ParticleSystem() {}
-	bool addParticle(BetterParticle*& particleReturned,const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1);
+
+	BetterParticle* addParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1);
+
+	BetterParticle* addParticle(const BetterParticle& particle);
 
 
-	bool addParticle(const BetterParticle& particle, BetterParticle*& particleReturned);
-
-	bool addParticle(const BetterParticle& particle);
 
 	void updateParticles(float dt); 
 

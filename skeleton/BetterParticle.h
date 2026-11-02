@@ -2,6 +2,9 @@
 #include "Particle.h"
 #include <functional>
 #include <utility>
+#include <type_traits>
+
+
 
 
 //Posible mejora: hacer que todos los iguales utilicen un único renderIrem o algo así
@@ -10,21 +13,26 @@ class BetterParticle :public Particle
 {
 	friend class Scene;
 	friend class ParticleSystem;
-
 protected:
-	bool alive;
-	float deathCountdown;
-	bool hasLifetime;
-
-	std::function<void(double)> extraUpdateFunc;
-	std::function<void()> onDeath;
-
-	//will die if this returns true
-	std::function<bool()> willDieConditions;
-	std::function<bool()> isSleep;
-
 	//esta clase existe para poder eliminar betterParticle creadas con GenerateBetterParticlePrefab(...) desde las escenas.
 	class BetterParticlePrefab;
+
+private:
+	bool alive;
+protected:
+
+	float deathCountdown;
+	bool hasLifetime;
+	 
+	//punteros a funciones que reciben la partícula sobre la que se llamará a la función.
+	std::function<void(BetterParticle*,double)> extraUpdateFunc;
+	std::function<void(BetterParticle*)> onDeath;
+
+	//will die if this returns true
+	std::function<bool(BetterParticle*)> willDieConditions;
+	std::function<bool(BetterParticle*)> isSleep;
+
+	
 
 protected:
 
@@ -84,19 +92,19 @@ public:
 	float getDeathCountdown() { return deathCountdown; }
 	float setDeathCountdown(float count) { this->deathCountdown = count; }
 
-	void setExtraUpdateFunc(std::function<void(double)> func) {
+	void setExtraUpdateFunc(std::function<void(BetterParticle*, double)> func) {
 		extraUpdateFunc = std::move(func);
 	}
 
-	void setOnDeath(std::function<void()> func) {
+	void setOnDeath(std::function<void(BetterParticle*)> func) {
 		onDeath = std::move(func);
 	}
 
-	void setWillDieConditions(std::function<bool()> func) {
+	void setWillDieConditions(std::function<bool(BetterParticle*)> func) {
 		willDieConditions = std::move(func);
 	}
 
-	void setIsSleep(std::function<bool()> func) {
+	void setIsSleep(std::function<bool(BetterParticle*)> func) {
 		isSleep = std::move(func);
 	}
 
@@ -126,3 +134,14 @@ private:
 public:
 	~BetterParticlePrefab() {};
 };
+
+template<typename BP>
+using IsOrInheritsFromBetterParticle = std::enable_if_t<
+	std::is_base_of<BetterParticle, BP>::value || std::is_same<BP, BetterParticle>::value
+	,
+	typename std::conditional<
+	std::is_same<BP, BetterParticle>::value,
+	BetterParticle::BetterParticlePrefab,
+	BP
+	>::type
+>;

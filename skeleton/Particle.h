@@ -38,6 +38,7 @@ protected:
 	Particle(const Vector3D& pos, const Vector3D& v = {0,0,0}, const Vector3D& a = { 0,0,0 }, double damping = 0.97, double w = 1, RenderItemP* renderItem = nullptr, bool hasRenderItem = true);
 	Particle(const Vector3D& pos, double damping, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 });
 	Particle(double w, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97);
+	Particle& operator=(const Particle& other);
 	~Particle();
 
 	virtual void Integrate(double dt);

@@ -31,6 +31,9 @@ Particle::Particle(const Particle& other) :
 	{
 		renderItem = new RenderItemP(other.renderItem->shape, &transform, other.renderItem->color);
 	}
+	else {
+		renderItem = nullptr;
+	}
 };
 
 Particle::Particle(const Vector3D& pos, const Vector3D& v, const Vector3D& a, double damping, double w, RenderItemP* renderItem, bool hasRenderItem) :transform(physx::PxTransform(pos)), v(v), a(a), damping(damping), hasStartedMoving(false), w(w), integrateFunc(&Particle::semiEulerIntegrate)
@@ -54,6 +57,39 @@ Particle::Particle(const Vector3D& pos, double damping, const Vector3D& v, const
 
 Particle::Particle(double w, const Vector3D& pos, const Vector3D& v, const Vector3D& a, double damping) :Particle(pos, v, a, damping, w)
 {
+}
+
+Particle& Particle::operator=(const Particle& other)
+{
+	if (this == &other)
+		return *this;
+
+
+	if (renderItem != nullptr)
+		renderItem->release();
+
+	if (other.renderItem != nullptr)
+	{
+		renderItem = new RenderItemP(
+			other.renderItem->shape,
+			&transform,
+			other.renderItem->color
+		);
+	}
+	else {
+		renderItem = nullptr;
+	}
+
+	transform = other.transform;
+	v = other.v;
+	a = other.a;
+	p0 = other.p0;
+	w = other.w;
+	damping = other.damping;
+	hasStartedMoving = other.hasStartedMoving;
+	integrateFunc = other.integrateFunc;
+
+	return *this;
 }
 
 Particle::~Particle()

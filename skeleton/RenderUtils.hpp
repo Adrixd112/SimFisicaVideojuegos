@@ -136,7 +136,7 @@ public:
 
 	//Shallow copy
 	RenderItem_Prefab(const RenderItem_Prefab& other) { ri = other.ri; ri->addReference(); }
-	bool operator=(const RenderItem_Prefab& other) { ri = other.ri; ri->addReference(); return true; }
+	RenderItem_Prefab& operator=(const RenderItem_Prefab& other) { ri = other.ri; ri->addReference(); return *this; }
 
 	//New RenderItem object, but with the same shape object.
 	RenderItem_Prefab Clone(const RenderItem_Prefab& other) {

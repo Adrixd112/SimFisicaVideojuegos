@@ -2,9 +2,9 @@
 
 void BetterParticle::Integrate(double dt)
 {
-	if (!isSleep || !isSleep())
+	if (!isSleep || !isSleep(this))
 	{
-		if(extraUpdateFunc) extraUpdateFunc(dt);
+		if(extraUpdateFunc) extraUpdateFunc(this,dt);
 
 		Particle::Integrate(dt);
 
@@ -12,7 +12,7 @@ void BetterParticle::Integrate(double dt)
 		if (hasLifetime && deathCountdown <= 0) alive = false;
 	}
 
-	if(willDieConditions) alive = alive && !willDieConditions();
+	if(willDieConditions) alive = alive && !willDieConditions(this);
 
-	if (!alive && onDeath) onDeath();
+	if (!alive && onDeath) onDeath(this);
 }

@@ -66,21 +66,23 @@ void ParticleEmitter_Rectangular_Ortogonal::SetEmittingFunction(const Vector3D& 
 	double timeBetweenParticles = 1 / pps;
 
 	BetterParticleCopy pc = p;
-	extraUpdateFunc = [this, mySystem, timeForNextParticle, timeBetweenParticles, dir, w, h, pc](double dt) mutable
+	extraUpdateFunc = [ mySystem, timeForNextParticle, timeBetweenParticles, dir, w, h, pc](ParticleEmitter_Rectangular_Ortogonal* self,double dt) mutable
 		{
-			this->GenericEmittingFunctionCall(mySystem, timeForNextParticle, timeBetweenParticles, dir, w, h, pc);
+			self->GenericEmittingFunctionCall(mySystem, timeForNextParticle, timeBetweenParticles, dir, w, h, pc);
 		};
 }
 
 void ParticleEmitter_Rectangular_Ortogonal::GenericEmittingFunctionCall(ParticleSystem* mySystem, double timeForNextParticle, double timeBetweenParticles, const Vector3D& dir, float w, float h, const BetterParticle& p) {
+	std::cout << "tfnp:" << timeForNextParticle << " dcountd:" << deathCountdown << "\n";
 	while (timeForNextParticle > deathCountdown) {
 		timeForNextParticle -= timeBetweenParticles;
 
-		BetterParticle* particleReturned;
-		mySystem->addParticle(p, particleReturned);
-
-		particleReturned->v.RotateVectorToDirPlane(dir);
-
-		particleReturned->transform.p = SquaredUniformDistribution_Oriented(dir, w, h);
+		BetterParticle* particleReturned = mySystem->addParticle(p);
+		
+		if(particleReturned)
+		{
+			particleReturned->v.RotateVectorToDirPlane(dir);
+			particleReturned->transform.p = SquaredUniformDistribution_Oriented(dir, w, h);
+		}
 	}
 }

@@ -17,18 +17,6 @@
 // inicialización, limpieza, actualización por frame y manejo de teclado.
 class Scene
 {
-	template<typename BP>
-	using IsOrInheritsFromBetterParticle = std::enable_if_t<
-		std::is_base_of<BetterParticle, BP>::value || std::is_same<BP, BetterParticle>::value
-		,
-		typename std::conditional<
-		std::is_same<BP, BetterParticle>::value,
-		BetterParticle::BetterParticlePrefab,
-		BP
-		>::type
-	>;
-
-
 public:
 	// Construye la escena con un nombre identificador.
 	explicit Scene(std::string name) : m_name(std::move(name)), sCamera(nullptr) { paused = false; }
@@ -121,18 +109,18 @@ public:
 	}*/
 
 	Proyectile* addProyectile(double m, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, double vReal = 10, const Vector3D& a = { 0,0,0 }, double damping = 0.97) {
-		Proyectile* p = new Proyectile(m,pos,v,vReal,a,damping);
+		Proyectile* p = new Proyectile(m, pos, v, vReal, a, damping);
 		particles.push_back(p);
 		return p;
 	}
 	Proyectile* addProyectile(double m, const Vector3D& pos, const Vector3D& dirV, double vReal, double vSim, const Vector3D& a = { 0,0,0 }, double damping = 0.97) {
-		Proyectile* p = new Proyectile(m, pos, dirV, vReal, vSim, a,damping);
+		Proyectile* p = new Proyectile(m, pos, dirV, vReal, vSim, a, damping);
 		particles.push_back(p);
 		return p;
 	}
 
 	bool addParticleSystem(std::string name) {
-		if (particleSystems.find(name) != particleSystems.end()) 
+		if (particleSystems.find(name) != particleSystems.end())
 		{
 			std::cout << "------WARNING: El particleSystem \"" << name << "\" YA existe------\n";
 			return false;
@@ -141,7 +129,7 @@ public:
 	}
 
 	ParticleSystem* GetParticleSystem(std::string name) {
-		if (particleSystems.find(name) == particleSystems.end()) 
+		if (particleSystems.find(name) == particleSystems.end())
 		{
 			std::cout << "------WARNING: El particleSystem \"" << name << "\" NO existe------\n";
 			return nullptr;
@@ -155,14 +143,14 @@ public:
 	}
 
 	template <typename BP>
-	IsOrInheritsFromBetterParticle<BP> GenerateBetterParticlePrefab(const Vector3D& pos = {0,0,0}, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
-		
+	IsOrInheritsFromBetterParticle<BP> GenerateBetterParticlePrefab(const Vector3D& pos = { 0,0,0 }, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
+
 		return BP(pos, v, a, deathCountdown, damping, w);
 	}
 
 	template <typename BP>
 	IsOrInheritsFromBetterParticle<BP> GenerateBetterParticlePrefab(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
-		return BP(renderItem,pos, v, a, deathCountdown, damping, w);
+		return BP(renderItem, pos, v, a, deathCountdown, damping, w);
 	}
 
 	template <typename BP>
@@ -185,7 +173,16 @@ public:
 	// Actualiza la lógica de la escena.
 	// dt: tiempo en segundos transcurrido desde la última actualización.
 	virtual void update(double dt) {};
-	void physicsUpdate(double dt) { if (!paused) { for (Particle* p : particles) { p->Integrate(dt); } } }
+	void physicsUpdate(double dt) {
+		if (!paused)
+		{
+			for (Particle* p : particles) { p->Integrate(dt); }
+			for (std::pair<const std::string, ParticleSystem>& ps : particleSystems) {
+				ps.second.updateParticles(dt);
+			}
+		}
+
+	}
 	// Manejo de pulsación de tecla.
 	// Se recibe la tecla pulsada y la transformada de la cámara para
 	// permitir respuestas dependientes de la orientación/posición de la cámara.
@@ -213,7 +210,7 @@ protected:
 	Camera* sCamera;
 	bool paused;
 private:
-	
+
 	std::unordered_map<std::string, ParticleSystem> particleSystems;
 	std::unordered_set<RenderItemO*> nonParticleRenderItems;
 	std::vector<TransformSPointer> nonParticleTransforms;
