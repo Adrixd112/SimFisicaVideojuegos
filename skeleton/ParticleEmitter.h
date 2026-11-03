@@ -2,7 +2,7 @@
 #include "BetterParticle.h"
 #include "ParticleSystem.h"
 #include <random>
-class ParticleEmitter : public BetterParticle
+class ParticleEmitter : public BetterParticlePadre
 {
 	friend class Scene;
 private:
@@ -11,16 +11,16 @@ private:
 	static std::normal_distribution<float> nDistribution;
 
 protected:
-	class BetterParticleCopy : public BetterParticle {
+	class BetterParticleCopy : public BetterParticlePadre {
 	public:
-		BetterParticleCopy(const BetterParticle& p) :BetterParticle(p) {};
-		BetterParticleCopy& operator=(const BetterParticle& p) { BetterParticle::operator=(p); }
+		BetterParticleCopy(const BetterParticlePadre& p) :BetterParticlePadre(p) {};
+		BetterParticleCopy& operator=(const BetterParticlePadre& p) { BetterParticlePadre::operator=(p); }
 	};
 
 protected:
 	ParticleEmitter() {};
-	ParticleEmitter(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1):BetterParticle (renderItem, pos, v , a ,deathCountdown ,  damping ,  w) {};
-	ParticleEmitter(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :BetterParticle(pos, v, a, deathCountdown, damping, w) {};
+	ParticleEmitter(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1):BetterParticlePadre (renderItem, pos, v , a ,deathCountdown ,  damping ,  w) {};
+	ParticleEmitter(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :BetterParticlePadre(pos, v, a, deathCountdown, damping, w) {};
 
 	static float UniformDistribution(float a, float b);
 	static float NormalDistribution(float mean, float sigma);
@@ -40,9 +40,9 @@ class ParticleEmitter_Rectangular_Ortogonal : public ParticleEmitter
 protected:
 	ParticleEmitter_Rectangular_Ortogonal(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = {0,0,0}, const Vector3D& a = {0,0,0}, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(renderItem, pos, v, a, deathCountdown, damping, w) {};
 	ParticleEmitter_Rectangular_Ortogonal(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(pos, v, a, deathCountdown, damping, w) {};
-	void GenericEmittingFunctionCall(ParticleSystem* mySystem, double timeForNextParticle, double timeBetweenParticles, const Vector3D& dir, float w, float h, const BetterParticle& p);
+	void GenericEmittingFunctionCall(ParticleSystem* mySystem, double timeForNextParticle, double timeBetweenParticles, const Vector3D& dir, float w, float h, const BetterParticlePadre& p);
 public:
-	void SetEmittingFunction(const Vector3D& dir, float w, float h, float pps, const BetterParticle& p, ParticleSystem* mySystem);
+	void SetEmittingFunction(const Vector3D& dir, float w, float h, float pps, const BetterParticlePadre& p, ParticleSystem* mySystem);
 };
 
 class ParticleEmitter_Conical : public ParticleEmitter

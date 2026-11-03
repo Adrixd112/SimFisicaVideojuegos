@@ -60,24 +60,24 @@ Vector3D ParticleEmitter::SquaredUniformDistribution_Oriented(const Vector3D& di
 	return  relativePos.RotateVectorToDirPlane(dir);
 }
 
-void ParticleEmitter_Rectangular_Ortogonal::SetEmittingFunction(const Vector3D& dir, float w, float h, float pps, const BetterParticle& p, ParticleSystem* mySystem)
+void ParticleEmitter_Rectangular_Ortogonal::SetEmittingFunction(const Vector3D& dir, float w, float h, float pps, const BetterParticlePadre& p, ParticleSystem* mySystem)
 {
 	double timeForNextParticle = deathCountdown;
 	double timeBetweenParticles = 1 / pps;
 
 	BetterParticleCopy pc = p;
-	extraUpdateFunc = [ mySystem, timeForNextParticle, timeBetweenParticles, dir, w, h, pc](ParticleEmitter_Rectangular_Ortogonal* self,double dt) mutable
+	extraUpdateFunc = [ mySystem, timeForNextParticle, timeBetweenParticles, dir, w, h, pc](BetterParticle<decltype(this)> *self, double dt) mutable
 		{
 			self->GenericEmittingFunctionCall(mySystem, timeForNextParticle, timeBetweenParticles, dir, w, h, pc);
 		};
 }
 
-void ParticleEmitter_Rectangular_Ortogonal::GenericEmittingFunctionCall(ParticleSystem* mySystem, double timeForNextParticle, double timeBetweenParticles, const Vector3D& dir, float w, float h, const BetterParticle& p) {
+void ParticleEmitter_Rectangular_Ortogonal::GenericEmittingFunctionCall(ParticleSystem* mySystem, double timeForNextParticle, double timeBetweenParticles, const Vector3D& dir, float w, float h, const BetterParticlePadre& p) {
 	std::cout << "tfnp:" << timeForNextParticle << " dcountd:" << deathCountdown << "\n";
 	while (timeForNextParticle > deathCountdown) {
 		timeForNextParticle -= timeBetweenParticles;
 
-		BetterParticle* particleReturned = mySystem->addParticle(p);
+		BetterParticlePadre* particleReturned = mySystem->addParticle(p);
 		
 		if(particleReturned)
 		{

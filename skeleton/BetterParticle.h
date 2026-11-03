@@ -6,10 +6,10 @@
 
 
 
-
 //Posible mejora: hacer que todos los iguales utilicen un único renderIrem o algo así
 //Usar funciones con nombre si
-class BetterParticle :public Particle
+
+class BetterParticlePadre :public Particle
 {
 	friend class Scene;
 	friend class ParticleSystem;
@@ -23,24 +23,14 @@ protected:
 
 	float deathCountdown;
 	bool hasLifetime;
-	 
-	//punteros a funciones que reciben la partícula sobre la que se llamará a la función.
-	std::function<void(BetterParticle*,double)> extraUpdateFunc;
-	std::function<void(BetterParticle*)> onDeath;
-
-	//will die if this returns true
-	std::function<bool(BetterParticle*)> willDieConditions;
-	std::function<bool(BetterParticle*)> isSleep;
-
-	
 
 protected:
 
-	BetterParticle() :Particle(), alive(false) {};
+	BetterParticlePadre() :Particle(), alive(false) {};
 
-	virtual ~BetterParticle() = default;
+	virtual ~BetterParticlePadre() = default;
 
-	//BetterParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97, double w = 1, RenderItemP* renderItem = nullptr, std::function<void()> extraUpdateFunc = nullptr, std::function<void()> onDeath = nullptr, std::function<bool()> willDieConditions = nullptr, std::function<bool()> isSleep = nullptr, float deathCountdown = -1) : Particle(pos, v, a, damping, w,renderItem),
+	//BetterParticlePadre(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97, double w = 1, RenderItemP* renderItem = nullptr, std::function<void()> extraUpdateFunc = nullptr, std::function<void()> onDeath = nullptr, std::function<bool()> willDieConditions = nullptr, std::function<bool()> isSleep = nullptr, float deathCountdown = -1) : Particle(pos, v, a, damping, w,renderItem),
 	//	alive(true),
 	//	deathCountdown(deathCountdown),
 	//	hasLifetime(deathCountdown >= 0),
@@ -51,7 +41,7 @@ protected:
 	//{}
 
 	//Si le das renderItem, lo pone; si le dices nullptr, no lo pone.
-	BetterParticle(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : Particle(pos, v, a, damping, w, renderItem, renderItem),
+	BetterParticlePadre(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : Particle(pos, v, a, damping, w, renderItem, renderItem),
 		alive(true),
 		deathCountdown(deathCountdown),
 		hasLifetime(deathCountdown >= 0),
@@ -63,7 +53,7 @@ protected:
 	}
 
 	//le pone renderItem default
-	BetterParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : Particle(pos, v, a, damping, w, nullptr, true),
+	BetterParticlePadre(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : Particle(pos, v, a, damping, w, nullptr, true),
 		alive(true),
 		deathCountdown(deathCountdown),
 		hasLifetime(deathCountdown >= 0),
@@ -74,7 +64,7 @@ protected:
 	{
 	}
 
-	BetterParticle(const BetterParticle& other) : Particle(other),
+	BetterParticlePadre(const BetterParticlePadre& other) : Particle(other),
 		alive(other.alive),
 		deathCountdown(other.deathCountdown),
 		hasLifetime(other.hasLifetime),
@@ -92,43 +82,134 @@ public:
 	float getDeathCountdown() { return deathCountdown; }
 	float setDeathCountdown(float count) { this->deathCountdown = count; }
 
-	void setExtraUpdateFunc(std::function<void(BetterParticle*, double)> func) {
+	virtual void setExtraUpdateFunc(std::function<void(BetterParticlePadre*, double)> func) = 0;
+
+	virtual void setOnDeath(std::function<void(BetterParticlePadre*)> func) = 0;
+
+	virtual void setWillDieConditions(std::function<bool(BetterParticlePadre*)> func) = 0;
+
+	virtual void setIsSleep(std::function<bool(BetterParticlePadre*)> func) = 0;
+	
+
+	virtual void Integrate(double dt) = 0;
+};
+
+template<typename BP = BetterParticlePadre>
+class BetterParticle :public Particle
+{
+	friend class Scene;
+	friend class ParticleSystem;
+
+protected:
+
+
+	//punteros a funciones que reciben la partícula sobre la que se llamará a la función.
+	std::function<void(BetterParticle<BP>*, double)> extraUpdateFunc;
+	std::function<void(BetterParticle<BP>*)> onDeath;
+
+	//will die if this returns true
+	std::function<bool(BetterParticle<BP>*)> willDieConditions;
+	std::function<bool(BetterParticle<BP>*)> isSleep;
+
+
+protected:
+
+	BetterParticlePadre() :Particle(), alive(false) {};
+
+	virtual ~BetterParticlePadre() = default;
+
+	//BetterParticlePadre(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97, double w = 1, RenderItemP* renderItem = nullptr, std::function<void()> extraUpdateFunc = nullptr, std::function<void()> onDeath = nullptr, std::function<bool()> willDieConditions = nullptr, std::function<bool()> isSleep = nullptr, float deathCountdown = -1) : Particle(pos, v, a, damping, w,renderItem),
+	//	alive(true),
+	//	deathCountdown(deathCountdown),
+	//	hasLifetime(deathCountdown >= 0),
+	//	extraUpdateFunc(std::move(extraUpdateFunc)),
+	//	onDeath(std::move(onDeath)),
+	//	willDieConditions(std::move(willDieConditions)),
+	//	isSleep(std::move(isSleep)) 
+	//{}
+
+	BetterParticlePadre(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : Particle(pos, v, a, damping, w, renderItem, renderItem),
+		alive(true),
+		deathCountdown(deathCountdown),
+		hasLifetime(deathCountdown >= 0),
+		extraUpdateFunc(nullptr),
+		onDeath(nullptr),
+		willDieConditions(nullptr),
+		isSleep(nullptr)
+	{
+	}
+
+	//le pone renderItem default
+	BetterParticlePadre(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : Particle(pos, v, a, damping, w, nullptr, true),
+		alive(true),
+		deathCountdown(deathCountdown),
+		hasLifetime(deathCountdown >= 0),
+		extraUpdateFunc(nullptr),
+		onDeath(nullptr),
+		willDieConditions(nullptr),
+		isSleep(nullptr)
+	{
+	}
+
+	BetterParticle(const BetterParticle<BP>& other) : BetterParticlePadre(other),
+		extraUpdateFunc(other.extraUpdateFunc),
+		onDeath(other.onDeath),
+		willDieConditions(other.willDieConditions),
+		isSleep(other.isSleep)
+	{
+	}
+
+
+public:
+	void setExtraUpdateFunc(std::function<void(BetterParticle<BP>*, double)> func)
+	{
 		extraUpdateFunc = std::move(func);
 	}
 
-	void setOnDeath(std::function<void(BetterParticle*)> func) {
+	void setOnDeath(std::function<void(BetterParticlePadre*)> func) {
 		onDeath = std::move(func);
 	}
 
-	void setWillDieConditions(std::function<bool(BetterParticle*)> func) {
+	void setWillDieConditions(std::function<bool(BetterParticlePadre*)> func) {
 		willDieConditions = std::move(func);
 	}
 
-	void setIsSleep(std::function<bool(BetterParticle*)> func) {
+	void setIsSleep(std::function<bool(BetterParticlePadre*)> func) {
 		isSleep = std::move(func);
 	}
+	void Integrate(double dt) override {
+		if (!isSleep || !isSleep(this))
+		{
+			if (extraUpdateFunc) extraUpdateFunc(this, dt);
 
-	void Integrate(double dt) override;
+			Particle::Integrate(dt);
 
+			deathCountdown -= dt;
+			if (hasLifetime && deathCountdown <= 0) alive = false;
+		}
 
+		if (willDieConditions) alive = alive && !willDieConditions(this);
 
+		if (!alive && onDeath) onDeath(this);
+	}
 };
 
-class BetterParticle::BetterParticlePrefab : public BetterParticle {
+
+class BetterParticlePadre::BetterParticlePrefab : public BetterParticlePadre {
 	friend class Scene;
 private:
-	BetterParticlePrefab(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : BetterParticle(renderItem, pos, v, a, deathCountdown, damping, w)
+	BetterParticlePrefab(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : BetterParticlePadre(renderItem, pos, v, a, deathCountdown, damping, w)
 	{
 		int i = 0;
 	}
 
 	//le pone renderItem default
-	BetterParticlePrefab(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : BetterParticle(pos, v, a, deathCountdown, damping, w)
+	BetterParticlePrefab(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : BetterParticlePadre(pos, v, a, deathCountdown, damping, w)
 	{
 		int i = 0;
 	}
 
-	BetterParticlePrefab(const BetterParticle& other) : BetterParticle(other)
+	BetterParticlePrefab(const BetterParticlePadre& other) : BetterParticlePadre(other)
 	{
 	}
 public:
@@ -137,11 +218,13 @@ public:
 
 template<typename BP>
 using IsOrInheritsFromBetterParticle = std::enable_if_t<
-	std::is_base_of<BetterParticle, BP>::value || std::is_same<BP, BetterParticle>::value
+	std::is_base_of<BetterParticlePadre, BP>::value || std::is_same<BP, BetterParticlePadre>::value
 	,
 	typename std::conditional<
-	std::is_same<BP, BetterParticle>::value,
-	BetterParticle::BetterParticlePrefab,
+	std::is_same<BP, BetterParticlePadre>::value,
+	BetterParticlePadre::BetterParticlePrefab,
 	BP
 	>::type
 >;
+
+
