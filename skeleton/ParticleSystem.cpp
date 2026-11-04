@@ -4,38 +4,32 @@
 ParticleSystem::ParticleSystem() :occupancy(0)
 {
 	for (int i = 0; i < STATIC_MAX_PARTICLE_COUNT;i++) {
-		particles[i] = BetterParticlePadre();
+		particles[i] = BetterParticle<void>();
 		emptySpaces.push(STATIC_MAX_PARTICLE_COUNT-i-1);
 	}
 
 }
 
-BetterParticlePadre* ParticleSystem::addParticle(const Vector3D& pos, const Vector3D& v, const Vector3D& a, float deathCountdown, double damping, double w)
+BetterParticle<void>* ParticleSystem::addParticle(const Vector3D& pos, const Vector3D& v, const Vector3D& a, float deathCountdown, double damping, double w)
 {
 	if (emptySpaces.empty())	return nullptr;
-	particles[emptySpaces.top()] = BetterParticlePadre(pos, v, a, deathCountdown, damping, w);
-	emptySpaces.pop();
-	return &particles[emptySpaces.top()];
+	int posInParticleArray = emptySpaces.top();emptySpaces.pop();
+	particles[posInParticleArray] = BetterParticle<void>(pos, v, a, deathCountdown, damping, w);
+	return static_cast<BetterParticle<void>*>(& particles[posInParticleArray]);
 }
 
-BetterParticlePadre* ParticleSystem::addParticle(const BetterParticlePadre& particle)
-{
-	if (emptySpaces.empty())	return nullptr;
-	particles[emptySpaces.top()] = particle;
-	emptySpaces.pop();
-	return &particles[emptySpaces.top()];
-}
+
 
 
 
 void ParticleSystem::updateParticles(float dt)
 {
 	for (int i = 0; i < STATIC_MAX_PARTICLE_COUNT;i++) {
-		if (particles[i].alive)
+		if (particles[i].GetAlive())
 		{
 			particles[i].Integrate(dt);
 
-			if(!particles[i].alive) emptySpaces.push(i);
+			if(!particles[i].GetAlive()) emptySpaces.push(i);
 		}
 	}
 }

@@ -145,17 +145,18 @@ public:
 	template <typename BP>
 	IsOrInheritsFromBetterParticle<BP> GenerateBetterParticlePrefab(const Vector3D& pos = { 0,0,0 }, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
 
-		return BP(pos, v, a, deathCountdown, damping, w);
+		return IsOrInheritsFromBetterParticle<BP>(pos, v, a, deathCountdown, damping, w);
 	}
 
 	template <typename BP>
 	IsOrInheritsFromBetterParticle<BP> GenerateBetterParticlePrefab(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
-		return BP(renderItem, pos, v, a, deathCountdown, damping, w);
+		return IsOrInheritsFromBetterParticle<BP>(renderItem, pos, v, a, deathCountdown, damping, w);
 	}
 
 	template <typename BP>
 	IsOrInheritsFromBetterParticle<BP> GenerateBetterParticlePrefab(const RenderItem_Prefab& renderItemPrefab, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
-		BP p = BP(pos, v, a, deathCountdown, damping, w);
+		IsOrInheritsFromBetterParticle<BP> p = IsOrInheritsFromBetterParticle<BP>(nullptr,pos, v, a, deathCountdown, damping, w);
+		std::string asa = typeid(p).name();
 		p.Particle::SetRenderItem(renderItemPrefab);
 		return p;
 	}
