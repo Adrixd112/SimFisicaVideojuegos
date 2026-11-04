@@ -25,12 +25,12 @@ public:
 	BetterParticle<void>* addParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1);
 
 	template<typename BP>
-	IsOrInheritsFromBetterParticle<BP>* addParticle(const BP& particle)
+	BP* addParticle(const BP& particle)
 	{
 		if (emptySpaces.empty())	return nullptr;
 		int posInParticleArray = emptySpaces.top();emptySpaces.pop();
 		particles[posInParticleArray] = particle;
-		return static_cast<IsOrInheritsFromBetterParticle<BP>*>(&particles[posInParticleArray]);
+		return static_cast<BP*>(&particles[posInParticleArray]);
 	}
 
 	void updateParticles(float dt); 

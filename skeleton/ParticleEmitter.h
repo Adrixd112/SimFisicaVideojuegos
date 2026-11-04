@@ -73,12 +73,12 @@ private:
 		while (timeForNextParticle > deathCountdown) {
 			timeForNextParticle -= timeBetweenParticles;
 
-			BetterParticle<T>* particleReturned = mySystem->addParticle(p);
+			BetterParticle<T>* pNueva = mySystem->addParticle(p);
 
-			if (particleReturned)
+			if (pNueva)
 			{
-				particleReturned->v.RotateVectorToDirPlane(dir);
-				particleReturned->transform.p = SquaredUniformDistribution_Oriented(dir, w, h);
+				pNueva->v.RotateVectorToDirPlane(dir);
+				pNueva->transform.p = SquaredUniformDistribution_Oriented(dir, w, h);
 			}
 		}
 	}

@@ -37,21 +37,23 @@ protected:
 	};
 
 	GenericBetterParticle(const GenericBetterParticle& other) :
-		Particle(),
+		Particle(other),
 		alive(other.alive),
 		deathCountdown(other.deathCountdown),
 		hasLifetime(other.hasLifetime)
 	{
 	};
 
+	virtual void Integrate(double dt) {};
 public:
 	bool GetAlive() { return alive; }
 	void SetAlive(bool alive) { this->alive = alive; }
 	float GetDeathCountdown() { return deathCountdown; }
 	float SetDeathCountdown(float count) { this->deathCountdown = count; }
 
-	virtual void Integrate(double dt) {};
+
 };
+
 
 template<typename BP = void >
 class BetterParticle :public GenericBetterParticle
@@ -118,8 +120,8 @@ protected:
 	{
 	}
 
-	void Integrate(double dt) override {
-		if (!isSleep(static_cast<BP*>(this)) || !isSleep(static_cast<BP*>(this)))
+	virtual void Integrate(double dt) override {
+		if (!isSleep || !isSleep(static_cast<BP*>(this)))
 		{
 			if (extraUpdateFunc) extraUpdateFunc(static_cast<BP*>(this), dt);
 
@@ -158,25 +160,17 @@ public:
 };
 
 template <typename BP>
-class BetterParticlePrefab : public BetterParticle<BP> {
+class BetterParticlePrefab : public BP {
 	friend class Scene;
+
 private:
-	BetterParticlePrefab(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : BetterParticle(renderItem, pos, v, a, deathCountdown, damping, w)
+	
+	BetterParticlePrefab(const BP& other): BP(other)
 	{
-		int i = 0;
 	}
 
-	//le pone renderItem default
-	BetterParticlePrefab(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : BetterParticle(pos, v, a, deathCountdown, damping, w)
-	{
-		int i = 0;
-	}
-
-	BetterParticlePrefab(const BetterParticle<BP>& other) : BetterParticle(other)
-	{
-	}
 public:
-	~BetterParticlePrefab() {};
+	~BetterParticlePrefab() = default;
 };
 
 
@@ -185,23 +179,13 @@ class ParticleEmitter;
 
 template<typename BP>
 struct NormalizeBetterParticle {
-	using type = std::conditional_t<std::is_base_of<GenericBetterParticle, BP>::value, BP, void>;
-};
-
-template<>
-struct NormalizeBetterParticle<BetterParticle<void>> {
-	using type = BetterParticlePrefab<void>;
-};
-
-template<>
-struct NormalizeBetterParticle <ParticleEmitter<void>> {
-	using type = ParticleEmitter<void>;
+	using type = BP;
 };
 
 
 template<typename BP>
 using IsOrInheritsFromBetterParticle = std::enable_if_t<
-	!std::is_void<typename NormalizeBetterParticle<BP>::type>::value,
+	std::is_base_of<GenericBetterParticle, BP>::value,
 	typename NormalizeBetterParticle<BP>::type
 >;
 
