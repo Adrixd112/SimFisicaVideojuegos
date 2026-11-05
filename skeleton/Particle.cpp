@@ -26,7 +26,7 @@ void Particle::Integrate(double dt)
 Particle::Particle(const Particle& other) :
 	transform(other.transform),
 	v(other.v),
-	a(other.a),
+	a(Vector3D::Zero),
 	p0(other.p0),
 	w(other.w),
 	damping(other.damping),
@@ -42,7 +42,7 @@ Particle::Particle(const Particle& other) :
 	}
 };
 
-Particle::Particle(const Vector3D& pos, const Vector3D& v, const Vector3D& a, double damping, double w, RenderItemP* renderItem, bool hasRenderItem) :transform(physx::PxTransform(pos)), v(v), a(a), damping(damping), hasStartedMoving(false), w(w), integrateFunc(&Particle::semiEulerIntegrate)
+Particle::Particle(const Vector3D& pos, const Vector3D& v,  double damping, double w, RenderItemP* renderItem, bool hasRenderItem) :transform(physx::PxTransform(pos)), v(v), a(Vector3D::Zero), damping(damping), hasStartedMoving(false), w(w), integrateFunc(&Particle::semiEulerIntegrate)
 {
 	if (hasRenderItem)
 	{
@@ -60,11 +60,11 @@ Particle::Particle(const Vector3D& pos, const Vector3D& v, const Vector3D& a, do
 		this->renderItem = nullptr;
 	}
 }
-Particle::Particle(const Vector3D& pos, double damping, const Vector3D& v, const Vector3D& a) : Particle(pos, v, a, damping) {
+Particle::Particle(const Vector3D& pos, double damping, const Vector3D& v) : Particle(pos, v,  damping) {
 
 }
 
-Particle::Particle(double w, const Vector3D& pos, const Vector3D& v, const Vector3D& a, double damping) :Particle(pos, v, a, damping, w)
+Particle::Particle(double w, const Vector3D& pos, const Vector3D& v,  double damping) :Particle(pos, v, damping, w)
 {
 }
 
@@ -89,7 +89,7 @@ Particle& Particle::operator=(const Particle& other)
 
 	transform = other.transform;
 	v = other.v;
-	a = other.a;
+	a =Vector3D::Zero;
 	p0 = other.p0;
 	w = other.w;
 	damping = other.damping;

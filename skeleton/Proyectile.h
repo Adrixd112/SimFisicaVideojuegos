@@ -20,11 +20,11 @@ private:
 protected:
 
 	Proyectile() {};
-	Proyectile(const Vector3D& pos, double vRealProp, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, double damping = 0.97, double w = 1);
-	Proyectile(const Vector3D& pos,  double damping, double vRealProp, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero);
-	Proyectile(double w, const Vector3D& pos, double vRealProp, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, double damping = 0.97);
-	Proyectile(double m,const Vector3D& pos, const Vector3D& v = Vector3D::Zero, double vReal = 10, const Vector3D& a = Vector3D::Zero, double damping = 0.97);
-	Proyectile(double m, const Vector3D& pos, const Vector3D& dirV, double vReal, double vSim, const Vector3D& a = Vector3D::Zero, double damping = 0.97);
+	Proyectile(const Vector3D& pos, double vRealProp, const Vector3D& v = Vector3D::Zero,  double damping = 0.97, double w = 1);
+	Proyectile(const Vector3D& pos,  double damping, double vRealProp, const Vector3D& v = Vector3D::Zero);
+	Proyectile(double w, const Vector3D& pos, double vRealProp, const Vector3D& v = Vector3D::Zero,  double damping = 0.97);
+	Proyectile(double m,const Vector3D& pos, const Vector3D& v = Vector3D::Zero, double vReal = 10,  double damping = 0.97);
+	Proyectile(double m, const Vector3D& pos, const Vector3D& dirV, double vReal, double vSim,  double damping = 0.97);
 
 	~Proyectile();
 };

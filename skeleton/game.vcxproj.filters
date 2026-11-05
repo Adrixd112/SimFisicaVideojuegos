@@ -25,6 +25,11 @@
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="BetterParticle.cpp" />
     <ClCompile Include="Scene_2.cpp" />
+    <ClCompile Include="ForceGenerator.cpp" />
+    <ClCompile Include="GravityForceGenerator.cpp" />
+    <ClCompile Include="Scene_3.cpp" />
+    <ClCompile Include="WindForceGenerator.cpp" />
+    <ClCompile Include="ExplosionForceGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -53,6 +58,11 @@
     <ClInclude Include="BetterParticle.h" />
     <ClInclude Include="Scene_2.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="ForceGenerator.h" />
+    <ClInclude Include="GravityForceGenerator.h" />
+    <ClInclude Include="Scene_3.h" />
+    <ClInclude Include="WindForceGenerator.h" />
+    <ClInclude Include="ExplosionForceGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

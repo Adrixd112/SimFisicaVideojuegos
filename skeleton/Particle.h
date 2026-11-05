@@ -36,9 +36,9 @@ protected:
 
 	Particle(): renderItem(nullptr) {};
 	Particle(const Particle& other);
-	Particle(const Vector3D& pos, const Vector3D& v = {0,0,0}, const Vector3D& a = Vector3D::Zero, double damping = 0.97, double w = 1, RenderItemP* renderItem = nullptr, bool hasRenderItem = true);
-	Particle(const Vector3D& pos, double damping, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero);
-	Particle(double w, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, double damping = 0.97);
+	Particle(const Vector3D& pos, const Vector3D& v = {0,0,0},  double damping = 0.97, double w = 1, RenderItemP* renderItem = nullptr, bool hasRenderItem = true);
+	Particle(const Vector3D& pos, double damping, const Vector3D& v = Vector3D::Zero);
+	Particle(double w, const Vector3D& pos, const Vector3D& v = Vector3D::Zero,  double damping = 0.97);
 	Particle& operator=(const Particle& other);
 	~Particle();
 

@@ -21,15 +21,15 @@ protected:
 protected:
 	GenericBetterParticle() :Particle(), alive(false) {};
 
-	GenericBetterParticle(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) : 
-		Particle(pos, v, a, damping, w, renderItem, renderItem),
+	GenericBetterParticle(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = Vector3D::Zero,  float deathCountdown = -1, double damping = 0.97, double w = 1) : 
+		Particle(pos, v,  damping, w, renderItem, renderItem),
 		alive(true),
 		deathCountdown(deathCountdown),
 		hasLifetime(deathCountdown >= 0) 
 	{
 	};
-	GenericBetterParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) : 
-		Particle(pos, v, a, damping, w, nullptr, true),
+	GenericBetterParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero,  float deathCountdown = -1, double damping = 0.97, double w = 1) : 
+		Particle(pos, v,  damping, w, nullptr, true),
 		alive(true),
 		deathCountdown(deathCountdown),
 		hasLifetime(deathCountdown >= 0) 
@@ -53,7 +53,20 @@ public:
 
 
 };
+template<typename BP = void >
+class BetterParticle;
 
+template<typename BP>
+struct NormalizeBetterParticleImp {
+	using type = BP;
+};
+template<>
+struct NormalizeBetterParticleImp<void> {
+	using type = BetterParticle<void>;
+};
+
+template<typename BP>
+using NormalizeBetterParticle = typename NormalizeBetterParticleImp<BP>::type;
 
 template<typename BP = void >
 class BetterParticle :public GenericBetterParticle
@@ -64,12 +77,12 @@ class BetterParticle :public GenericBetterParticle
 private:
 
 	//punteros a funciones que reciben la part�cula sobre la que se llamar� a la funci�n.
-	std::function<void(BP*, double)> extraUpdateFunc;
-	std::function<void(BP*)> onDeath;
+	std::function<void(NormalizeBetterParticle<BP>*, double)> extraUpdateFunc;
+	std::function<void(NormalizeBetterParticle<BP>*)> onDeath;
 
 	//will die if this returns true
-	std::function<bool(BP*)> willDieConditions;
-	std::function<bool(BP*)> isSleep;
+	std::function<bool(NormalizeBetterParticle<BP>*)> willDieConditions;
+	std::function<bool(NormalizeBetterParticle<BP>*)> isSleep;
 
 
 protected:
@@ -78,7 +91,7 @@ protected:
 
 	virtual ~BetterParticle() = default;
 
-	//BetterParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, double damping = 0.97, double w = 1, RenderItemP* renderItem = nullptr, std::function<void()> extraUpdateFunc = nullptr, std::function<void()> onDeath = nullptr, std::function<bool()> willDieConditions = nullptr, std::function<bool()> isSleep = nullptr, float deathCountdown = -1) : Particle(pos, v, a, damping, w,renderItem),
+	//BetterParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero,  double damping = 0.97, double w = 1, RenderItemP* renderItem = nullptr, std::function<void()> extraUpdateFunc = nullptr, std::function<void()> onDeath = nullptr, std::function<bool()> willDieConditions = nullptr, std::function<bool()> isSleep = nullptr, float deathCountdown = -1) : Particle(pos, v,  damping, w,renderItem),
 	//	alive(true),
 	//	deathCountdown(deathCountdown),
 	//	hasLifetime(deathCountdown >= 0),
@@ -89,8 +102,8 @@ protected:
 	//{}
 
 	//Si le das renderItem, lo pone; si le dices nullptr, no lo pone.
-	BetterParticle(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :
-		GenericBetterParticle(renderItem, pos, v, a, deathCountdown, damping, w),
+	BetterParticle(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = Vector3D::Zero,  float deathCountdown = -1, double damping = 0.97, double w = 1) :
+		GenericBetterParticle(renderItem, pos, v,  deathCountdown, damping, w),
 		extraUpdateFunc(nullptr),
 		onDeath(nullptr),
 		willDieConditions(nullptr),
@@ -99,8 +112,8 @@ protected:
 	}
 
 	//le pone renderItem default
-	BetterParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :
-		GenericBetterParticle(pos, v, a, deathCountdown, damping, w),
+	BetterParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero,  float deathCountdown = -1, double damping = 0.97, double w = 1) :
+		GenericBetterParticle(pos, v,  deathCountdown, damping, w),
 		extraUpdateFunc(nullptr),
 		onDeath(nullptr),
 		willDieConditions(nullptr),
@@ -118,9 +131,9 @@ protected:
 	}
 
 	virtual void Integrate(double dt) override {
-		if (!isSleep || !isSleep(static_cast<BP*>(this)))
+		if (!isSleep || !isSleep(static_cast<NormalizeBetterParticle<BP>*>(this)))
 		{
-			if (extraUpdateFunc) extraUpdateFunc(static_cast<BP*>(this), dt);
+			if (extraUpdateFunc) extraUpdateFunc(static_cast<NormalizeBetterParticle<BP>*>(this), dt);
 
 			Particle::Integrate(dt);
 
@@ -128,26 +141,26 @@ protected:
 			if (hasLifetime && deathCountdown <= 0) SetAlive(false);
 		}
 
-		if (willDieConditions) SetAlive(GetAlive() && !willDieConditions(static_cast<BP*>(this)));
+		if (willDieConditions) SetAlive(GetAlive() && !willDieConditions(static_cast<NormalizeBetterParticle<BP>*>(this)));
 
-		if (!GetAlive() && onDeath) onDeath(static_cast<BP*>(this));
+		if (!GetAlive() && onDeath) onDeath(static_cast<NormalizeBetterParticle<BP>*>(this));
 	}
 
 public:
-	void SetExtraUpdateFunc(std::function<void(BP*, double)> func)
+	void SetExtraUpdateFunc(std::function<void(NormalizeBetterParticle<BP>*, double)> func)
 	{
 		extraUpdateFunc = std::move(func);
 	}
 
-	void SetOnDeath(std::function<void(BP*)> func) {
+	void SetOnDeath(std::function<void(NormalizeBetterParticle<BP>*)> func) {
 		onDeath = std::move(func);
 	}
 
-	void SetWillDieConditions(std::function<bool(BP*)> func) {
+	void SetWillDieConditions(std::function<bool(NormalizeBetterParticle<BP>*)> func) {
 		willDieConditions = std::move(func);
 	}
 
-	void SetIsSleep(std::function<bool(BP*)> func) {
+	void SetIsSleep(std::function<bool(NormalizeBetterParticle<BP>*)> func) {
 		isSleep = std::move(func);
 	}
 
@@ -182,19 +195,13 @@ public:
 };
 
 
-template<typename BP>
-class ParticleEmitter;
 
-template<typename BP>
-struct NormalizeBetterParticle {
-	using type = BP;
-};
 
 
 template<typename BP>
 using IsOrInheritsFromBetterParticle = std::enable_if_t<
 	std::is_base_of<GenericBetterParticle, BP>::value,
-	typename NormalizeBetterParticle<BP>::type
+	BP
 >;
 
 

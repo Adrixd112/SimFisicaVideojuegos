@@ -99,6 +99,10 @@ public:
 	Vector3D& operator-=(const Vector3D& other) noexcept { x -= other.x; y -= other.y; z -= other.z; return *this; }
 
 	bool operator==(const Vector3D& other) const noexcept { return x == other.x && y == other.y && z == other.z; }
+	bool operator<(const Vector3D& other) const noexcept { return x < other.x && y < other.y && z < other.z; }
+	bool operator>(const Vector3D& other) const noexcept { return x > other.x && y > other.y && z > other.z; }
+	bool operator>=(const Vector3D& other) const noexcept { return !(*this < other); }
+	bool operator<= (const Vector3D & other) const noexcept { return !(*this > other); }
 
 	operator physx::PxVec3() const { return physx::PxVec3(x, y, z); }
 

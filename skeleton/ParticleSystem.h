@@ -1,11 +1,15 @@
 #pragma once
 #include "ParticleEmitter.h";
 #include "BetterParticle.h";
+#include "ForceGenerator.h"
+
+
 #include <vector>;
 #include "Utils.h";
 
 
-constexpr size_t STATIC_MAX_PARTICLE_COUNT = 3000;
+constexpr size_t STATIC_MAX_PARTICLE_COUNT = 10000;
+constexpr size_t STATIC_MAX_FORCEGEN_COUNT = 10;
 
 class ParticleSystem
 {
@@ -13,16 +17,22 @@ class ParticleSystem
 
 	Stack<int,STATIC_MAX_PARTICLE_COUNT> emptySpaces;
 
+	ForceGenerator* forceGenerators[STATIC_MAX_PARTICLE_COUNT];
 
+	Stack<int, STATIC_MAX_FORCEGEN_COUNT> emptyForceGeneratorSpaces;
 
-	size_t occupancy;
+	bool forceGeneratorsActive;
 
+	bool active;
 public:
 
-	ParticleSystem();
-	~ParticleSystem() {}
+	ParticleSystem() ;
+	~ParticleSystem();
 
-	BetterParticle<void>* addParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1);
+	ParticleSystem(const ParticleSystem&) = delete;
+	ParticleSystem& operator=(const ParticleSystem&) = delete;
+
+	BetterParticle<void>* addParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero,  float deathCountdown = -1, double damping = 0.97, double w = 1);
 
 	template<typename BP>
 	BP* addParticle(const Particle_Prefab<BP>& particle)
@@ -34,8 +44,27 @@ public:
 		return static_cast<BP*>(particles[posInParticleArray]);
 	}
 
+	ForceGenerator* addForceGenerator(ForceGenerator* fg);
+	
+	//elimina todas las apariciones del generador de fuerzas del array interno. Hace delete si se lo dices.
+	bool removeForceGenerator(ForceGenerator* fg,bool doesDelete = true);
 
 	void updateParticles(float dt); 
 
+	void setUseForcesActive(bool useForcesActive) {
+		this->forceGeneratorsActive = useForcesActive;
+	}
+
+	bool getUseForcesActive() {
+		return forceGeneratorsActive;
+	}
+
+	void setActive(bool active) {
+		this->active = active;
+	}
+
+	bool getActive() {
+		return active;
+	}
 };
 
