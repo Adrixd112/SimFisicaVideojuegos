@@ -20,10 +20,6 @@ ParticleSystem::~ParticleSystem()
 		delete particles[i];
 	}
 	
-	for (int i = 0; i < STATIC_MAX_FORCEGEN_COUNT;i++) {
-		delete forceGenerators[i];	
-	}
-	
 }
 
 BetterParticle<void>* ParticleSystem::addParticle(const Vector3D& pos, const Vector3D& v,  float deathCountdown, double damping, double w)
@@ -34,7 +30,7 @@ BetterParticle<void>* ParticleSystem::addParticle(const Vector3D& pos, const Vec
 	return static_cast<BetterParticle<void>*>(particles[posInParticleArray]);
 }
 
-ForceGenerator* ParticleSystem::addForceGenerator(ForceGenerator* fg)
+std::shared_ptr<ForceGenerator> ParticleSystem::addForceGenerator(std::shared_ptr<ForceGenerator> fg)
 {
 	if (emptyForceGeneratorSpaces.empty())	return nullptr;
 	int posInForceGenArray = emptyForceGeneratorSpaces.top();emptyForceGeneratorSpaces.pop();
@@ -42,23 +38,31 @@ ForceGenerator* ParticleSystem::addForceGenerator(ForceGenerator* fg)
 	return fg;
 }
 
-bool ParticleSystem::removeForceGenerator(ForceGenerator* fg,bool doesDelete)
+bool ParticleSystem::removeForceGenerator(std::shared_ptr<ForceGenerator> fg)
 {
 	bool encontrado = false;
 	for (int i = 0;i < STATIC_MAX_FORCEGEN_COUNT;i++) {
 		if (forceGenerators[i] = fg) 
 		{
+			forceGenerators[i].reset();
 			forceGenerators[i] = nullptr;
 			encontrado = true;
 		}
 	}
-	if (encontrado&&doesDelete) delete fg;
 	return encontrado;
 }
 
 void ParticleSystem::updateParticles(float dt)
 {
 	if (!active) return;
+	if (forceGeneratorsActive) {
+		for (int fi = 0;fi < STATIC_MAX_FORCEGEN_COUNT;fi++) {
+			std::shared_ptr<ForceGenerator> fgen = forceGenerators[fi];
+			if (fgen != nullptr && fgen->getActive()) {
+				fgen->update(dt);
+			}
+		}
+	}
 
 	for (int i = 0; i < STATIC_MAX_PARTICLE_COUNT;i++) {
 		if (particles[i] != nullptr)
@@ -69,7 +73,7 @@ void ParticleSystem::updateParticles(float dt)
 				{
 					if (forceGeneratorsActive) {
 						for (int fi = 0;fi < STATIC_MAX_FORCEGEN_COUNT;fi++) {
-							ForceGenerator* fgen = forceGenerators[fi];
+							std::shared_ptr<ForceGenerator> fgen = forceGenerators[fi];
 							if (fgen != nullptr && fgen->getActive()) {
 								particles[i]->a += fgen->CalculateForce(particles[i]) * particles[i]->w;//a = F/m = F*w
 							}

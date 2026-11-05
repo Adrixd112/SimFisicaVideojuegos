@@ -17,6 +17,7 @@
 #include "ForceGenerator.h"
 #include "GravityForceGenerator.h"
 #include "WindForceGenerator.h"
+#include "ExplosionForceGenerator.h"
 
 // Clase base para las distintas escenas de la aplicación.
 // Provee la interfaz mínima que debe implementar cualquier escena:
@@ -25,15 +26,15 @@ class Scene
 {
 public:
 	// Construye la escena con un nombre identificador.
-	explicit Scene(std::string name) : m_name(std::move(name)), sCamera(nullptr) { paused = false; }
+	explicit Scene(std::string name) : m_name(std::move(name)), sCamera(nullptr),timeSinceSceneInit(0) { paused = false; }
 	virtual ~Scene() = default;
 
 	// Inicializa recursos de la escena (físicos, gráficos, datos, ...).
 	virtual void init() = 0;
 
 	// Libera los recursos asignados en init().
-	//Invariantes: el todo renderItem existente debe estar en la lista de la escena y todo renderItem de la lista de la escena existe.
 	void cleanupSceneParent() {
+		timeSinceSceneInit = 0;
 		for (RenderItemO* ri : nonParticleRenderItems) {
 			ri->release();
 		}
@@ -212,6 +213,7 @@ public:
 	void physicsUpdate(double dt) {
 		if (!paused)
 		{
+			timeSinceSceneInit += dt;
 			for (Particle* p : particles) { p->Integrate(dt); }
 			for (std::pair<const std::string, ParticleSystem>& ps : particleSystems) {
 				ps.second.updateParticles(dt);
@@ -239,12 +241,14 @@ public:
 
 	Camera* getSceneCamera() const { return sCamera; };
 
+	double getTimeSinceSceneInit() { return timeSinceSceneInit; }
 
 protected:
 	// Nombre de la escena (útil para identificarla en menús o logs).
 	std::string m_name;
 	Camera* sCamera;
 	bool paused;
+	double timeSinceSceneInit;
 private:
 
 	std::unordered_map<std::string, ParticleSystem> particleSystems;

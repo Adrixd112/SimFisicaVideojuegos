@@ -25,8 +25,12 @@ void Scene_3::init()
 	pcn.SetEmittingFunction(Vector3D(0, 1, 0).normalize(), 30, 1, 1.2,0.5, 100, 
 		partAgua,
 		GetParticleSystem("1"));
+	std::shared_ptr<ForceGenerator> gravity = std::make_shared<GravityForceGenerator>();
+	wind = std::shared_ptr<ForceGenerator>(new WindForceGenerator({ 0,0,1 }, 8.33f, { 0,100,0 }, { 200,190,200 }));
+	explosion = std::shared_ptr<ExplosionForceGenerator>(new ExplosionForceGenerator({ 0,0,0 }, 1000, 30));
 
 	GetParticleSystem("1")->addParticle(pcn);
-	GetParticleSystem("1")->addForceGenerator(new GravityForceGenerator(-9.81));
-	GetParticleSystem("1")->addForceGenerator(new WindForceGenerator({ 0,0,1 }, 8.33f, { 0,100,0 }, {200,190,200}));
+	GetParticleSystem("1")->addForceGenerator(gravity);
+	GetParticleSystem("1")->addForceGenerator(wind);
+	
 }

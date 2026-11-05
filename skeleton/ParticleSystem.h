@@ -3,7 +3,7 @@
 #include "BetterParticle.h";
 #include "ForceGenerator.h"
 
-
+#include <memory>
 #include <vector>;
 #include "Utils.h";
 
@@ -17,7 +17,7 @@ class ParticleSystem
 
 	Stack<int,STATIC_MAX_PARTICLE_COUNT> emptySpaces;
 
-	ForceGenerator* forceGenerators[STATIC_MAX_PARTICLE_COUNT];
+	std::shared_ptr<ForceGenerator> forceGenerators[STATIC_MAX_PARTICLE_COUNT];
 
 	Stack<int, STATIC_MAX_FORCEGEN_COUNT> emptyForceGeneratorSpaces;
 
@@ -44,10 +44,9 @@ public:
 		return static_cast<BP*>(particles[posInParticleArray]);
 	}
 
-	ForceGenerator* addForceGenerator(ForceGenerator* fg);
+	std::shared_ptr<ForceGenerator> addForceGenerator(std::shared_ptr<ForceGenerator> fg);
 	
-	//elimina todas las apariciones del generador de fuerzas del array interno. Hace delete si se lo dices.
-	bool removeForceGenerator(ForceGenerator* fg,bool doesDelete = true);
+	bool removeForceGenerator(std::shared_ptr<ForceGenerator> fg);
 
 	void updateParticles(float dt); 
 

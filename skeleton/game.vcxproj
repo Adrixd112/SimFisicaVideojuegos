@@ -287,6 +287,7 @@
     <ClCompile Include="Scene_1_2b.cpp" />
     <ClCompile Include="Scene_2.cpp" />
     <ClCompile Include="Scene_3.cpp" />
+    <ClCompile Include="Scene_3B.cpp" />
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="WindForceGenerator.cpp" />
   </ItemGroup>
@@ -315,6 +316,7 @@
     <ClInclude Include="Scene_1_2b.h" />
     <ClInclude Include="Scene_2.h" />
     <ClInclude Include="Scene_3.h" />
+    <ClInclude Include="Scene_3B.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vector3D.h" />
     <ClInclude Include="WindForceGenerator.h" />

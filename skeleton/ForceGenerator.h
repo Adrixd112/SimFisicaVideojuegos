@@ -8,6 +8,7 @@ protected:
 public:
 	ForceGenerator() :active(true) {};
 	virtual Vector3D CalculateForce(Particle* p) = 0;
+	virtual void update(double dt) {};
 
 	void setActive(bool active) {
 		this->active = active;
