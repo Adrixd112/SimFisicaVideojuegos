@@ -24,7 +24,8 @@ Vector2D ParticleEmitterOperations::NormalBidimensionalDistribution(float sigma)
 
 {
 	float dx = nDistribution(generator) * sigma;
-	return Vector2D(dx, dx);
+	float dy = nDistribution(generator) * sigma;
+	return Vector2D(dx, dy);
 }
 
 Vector2D ParticleEmitterOperations::CircularUniformDistribution(float radius)
@@ -43,21 +44,21 @@ Vector3D ParticleEmitterOperations::NormalBidimensionalDistribution_Oriented(con
 {
 	Vector2D relativePos = NormalBidimensionalDistribution(sigma);
 
-	return  relativePos.RotateVectorToDirPlane(dir);
+	return  relativePos.GetRotatedVectorToDirPlane(dir);
 }
 
 Vector3D ParticleEmitterOperations::CircularUniformDistribution_Oriented(const Vector3D& dir, float radius)
 {
 	Vector2D relativePos = CircularUniformDistribution(radius);
 
-	return  relativePos.RotateVectorToDirPlane(dir);
+	return  relativePos.GetRotatedVectorToDirPlane(dir);
 }
 
 Vector3D ParticleEmitterOperations::SquaredUniformDistribution_Oriented(const Vector3D& dir, float w, float h)
 {
 	Vector2D relativePos = SquaredUniformDistribution(Vector2D(w / 2, h / 2), Vector2D(-w / 2, -h / 2));
 
-	return  relativePos.RotateVectorToDirPlane(dir);
+	return  relativePos.GetRotatedVectorToDirPlane(dir);
 }
 
 

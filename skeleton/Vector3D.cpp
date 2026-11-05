@@ -1,7 +1,9 @@
 #include "Vector3D.h"
 
+const Vector3D Vector3D::Zero = Vector3D(0, 0, 0);
+const Vector2D Vector2D::Zero = Vector2D(0, 0);
 
-Vector3D Vector3D::RotateVectorToDirPlane(const Vector3D& planeRelativeCoordinates, const Vector3D& dirFin, const Vector3D& dirIni)
+Vector3D Vector3D::GetRotatedVectorToDirPlane(const Vector3D& planeRelativeCoordinates, const Vector3D& dirFin, const Vector3D& dirIni)
 {
 	Vector3D axis = dirIni.cross(dirFin);
 	double angleCos = dirIni.dot(dirFin);
@@ -11,13 +13,13 @@ Vector3D Vector3D::RotateVectorToDirPlane(const Vector3D& planeRelativeCoordinat
 	return posFin;
 }
 
-Vector3D Vector3D::RotateVectorToDirPlane(const Vector3D& dirFin, const Vector3D& dirIni )
+Vector3D Vector3D::GetRotatedVectorToDirPlane(const Vector3D& dirFin, const Vector3D& dirIni )
 {
-	return RotateVectorToDirPlane(*this, dirFin, dirIni);
+	return GetRotatedVectorToDirPlane(*this, dirFin, dirIni);
 }
 
-void Vector3D::RotatedToDirPlane(const Vector3D& dirFin, const Vector3D& dirIni)
+void Vector3D::RotateToDirPlane (const Vector3D& dirFin, const Vector3D& dirIni)
 {
-	*this = RotateVectorToDirPlane(*this, dirFin, dirIni);
+	*this = GetRotatedVectorToDirPlane(*this, dirFin, dirIni);
 }
 

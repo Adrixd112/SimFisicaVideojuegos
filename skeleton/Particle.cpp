@@ -1,16 +1,22 @@
 #include "Particle.h"
 
-void Particle::SetRenderItem(const RenderItem_Prefab& rip)
+void Particle::SetRenderItem(const RenderItem* rip)
 {
 	if (renderItem) renderItem->release();
-	renderItem = new RenderItemP(rip.GetRenderItem()->shape, &transform, rip.GetRenderItem()->color);
+	renderItem = new RenderItemP(rip->shape, &transform, rip->color);
 }
 
-//void Particle::SetRenderItem(const RenderItem* ri)
-//{
-//	if (renderItem) renderItem->release();
-//	renderItem = new RenderItemP(ri->shape, &transform, ri->color);
-//}
+void Particle::SetRenderItemPrefab(const RenderItem* ri)
+{
+	if (renderItem) renderItem->release();
+	renderItem = new RenderItemP(ri->shape, ri->color);
+}
+
+void Particle::SetRenderItemPrefab(const RenderItem_Prefab& ri)
+{
+	if (renderItem) renderItem->release();
+	renderItem = new RenderItemP(ri.shape, ri.color);
+}
 
 void Particle::Integrate(double dt)
 {
@@ -29,7 +35,7 @@ Particle::Particle(const Particle& other) :
 {
 	if (other.renderItem != nullptr)
 	{
-		renderItem = new RenderItemP(other.renderItem->shape, &transform, other.renderItem->color);
+			renderItem = new RenderItemP(other.renderItem->shape, &transform, other.renderItem->color);
 	}
 	else {
 		renderItem = nullptr;
@@ -40,7 +46,10 @@ Particle::Particle(const Vector3D& pos, const Vector3D& v, const Vector3D& a, do
 {
 	if (hasRenderItem)
 	{
-		if (renderItem) { this->renderItem = renderItem; }
+		if (renderItem) 
+		{
+				this->renderItem = new RenderItemP(renderItem->shape, &transform, renderItem->color);
+		}
 		else
 		{
 			physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(0.5f));
@@ -70,11 +79,9 @@ Particle& Particle::operator=(const Particle& other)
 
 	if (other.renderItem != nullptr)
 	{
-		renderItem = new RenderItemP(
-			other.renderItem->shape,
-			&transform,
-			other.renderItem->color
-		);
+
+			renderItem = new RenderItemP(other.renderItem->shape, &transform, other.renderItem->color);
+
 	}
 	else {
 		renderItem = nullptr;

@@ -21,14 +21,14 @@ protected:
 protected:
 	GenericBetterParticle() :Particle(), alive(false) {};
 
-	GenericBetterParticle(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : 
+	GenericBetterParticle(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) : 
 		Particle(pos, v, a, damping, w, renderItem, renderItem),
 		alive(true),
 		deathCountdown(deathCountdown),
 		hasLifetime(deathCountdown >= 0) 
 	{
 	};
-	GenericBetterParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) : 
+	GenericBetterParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) : 
 		Particle(pos, v, a, damping, w, nullptr, true),
 		alive(true),
 		deathCountdown(deathCountdown),
@@ -60,9 +60,6 @@ class BetterParticle :public GenericBetterParticle
 {
 	friend class Scene;
 	friend class ParticleSystem;
-protected:
-	//esta clase existe para poder eliminar betterParticle creadas con GenerateBetterParticlePrefab(...) desde las escenas.
-	class BetterParticlePrefab;
 
 private:
 
@@ -81,7 +78,7 @@ protected:
 
 	virtual ~BetterParticle() = default;
 
-	//BetterParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97, double w = 1, RenderItemP* renderItem = nullptr, std::function<void()> extraUpdateFunc = nullptr, std::function<void()> onDeath = nullptr, std::function<bool()> willDieConditions = nullptr, std::function<bool()> isSleep = nullptr, float deathCountdown = -1) : Particle(pos, v, a, damping, w,renderItem),
+	//BetterParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, double damping = 0.97, double w = 1, RenderItemP* renderItem = nullptr, std::function<void()> extraUpdateFunc = nullptr, std::function<void()> onDeath = nullptr, std::function<bool()> willDieConditions = nullptr, std::function<bool()> isSleep = nullptr, float deathCountdown = -1) : Particle(pos, v, a, damping, w,renderItem),
 	//	alive(true),
 	//	deathCountdown(deathCountdown),
 	//	hasLifetime(deathCountdown >= 0),
@@ -92,7 +89,7 @@ protected:
 	//{}
 
 	//Si le das renderItem, lo pone; si le dices nullptr, no lo pone.
-	BetterParticle(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :
+	BetterParticle(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :
 		GenericBetterParticle(renderItem, pos, v, a, deathCountdown, damping, w),
 		extraUpdateFunc(nullptr),
 		onDeath(nullptr),
@@ -102,7 +99,7 @@ protected:
 	}
 
 	//le pone renderItem default
-	BetterParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :
+	BetterParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :
 		GenericBetterParticle(pos, v, a, deathCountdown, damping, w),
 		extraUpdateFunc(nullptr),
 		onDeath(nullptr),
@@ -159,18 +156,29 @@ public:
 
 };
 
+//Clase segura que guarda una copia de una particle en cualquier lugar
+
 template <typename BP>
-class BetterParticlePrefab : public BP {
+class Particle_Prefab : public BP {
+	static_assert(
+		std::is_base_of<GenericBetterParticle, BP>::value,
+		"BP must inherit from GenericBetterParticle"
+		);
+
 	friend class Scene;
 
-private:
-	
-	BetterParticlePrefab(const BP& other): BP(other)
-	{
-	}
-
 public:
-	~BetterParticlePrefab() = default;
+
+	Particle_Prefab(const BP& other) : BP(other)
+	{
+		if(this->Particle::renderItem!=nullptr) this->Particle::renderItem->SetTransform(nullptr);
+	}
+	Particle_Prefab(const Particle_Prefab<BP>& other) : BP(other)
+	{
+		if (this->Particle::renderItem != nullptr) this->Particle::renderItem->SetTransform(nullptr);
+	}
+	~Particle_Prefab() = default;
+	
 };
 
 

@@ -81,39 +81,39 @@ public:
 		return ri;
 	}
 
-	Particle* addParticle(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97) {
+	Particle* addParticle(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, double damping = 0.97) {
 		particles.push_back(new Particle(pos, v, a, damping));
 		return particles.back();
 	}
-	Particle* addParticle(const Vector3D& pos, double damping, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }) {
+	Particle* addParticle(const Vector3D& pos, double damping, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero) {
 		particles.push_back(new Particle(pos, v, a, damping));
 		return particles.back();
 	}
 
-	Proyectile* addProyectile(const Vector3D& pos, double vRealProp, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97, double w = 1) {
+	Proyectile* addProyectile(const Vector3D& pos, double vRealProp, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, double damping = 0.97, double w = 1) {
 		Proyectile* p = new Proyectile(pos, vRealProp, v, a, damping, w);
 		particles.push_back(p);
 		return p;
 	}
-	/*Proyectile* addProyectile(const Vector3D& pos, double damping, double vRealProp, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 })
+	/*Proyectile* addProyectile(const Vector3D& pos, double damping, double vRealProp, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero)
 	{
 		Proyectile* p = new Proyectile(pos, vRealProp, v, a, damping);
 		particles.push_back(p);
 		return p;
 	}
-	Proyectile* addProyectile(double w, const Vector3D& pos, double vRealProp, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, double damping = 0.97)
+	Proyectile* addProyectile(double w, const Vector3D& pos, double vRealProp, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, double damping = 0.97)
 	{
 		Proyectile* p = new Proyectile(pos, vRealProp, v, a, damping, w);
 		particles.push_back(p);
 		return p;
 	}*/
 
-	Proyectile* addProyectile(double m, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, double vReal = 10, const Vector3D& a = { 0,0,0 }, double damping = 0.97) {
+	Proyectile* addProyectile(double m, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, double vReal = 10, const Vector3D& a = Vector3D::Zero, double damping = 0.97) {
 		Proyectile* p = new Proyectile(m, pos, v, vReal, a, damping);
 		particles.push_back(p);
 		return p;
 	}
-	Proyectile* addProyectile(double m, const Vector3D& pos, const Vector3D& dirV, double vReal, double vSim, const Vector3D& a = { 0,0,0 }, double damping = 0.97) {
+	Proyectile* addProyectile(double m, const Vector3D& pos, const Vector3D& dirV, double vReal, double vSim, const Vector3D& a = Vector3D::Zero, double damping = 0.97) {
 		Proyectile* p = new Proyectile(m, pos, dirV, vReal, vSim, a, damping);
 		particles.push_back(p);
 		return p;
@@ -138,28 +138,48 @@ public:
 		return &particleSystems[name];
 	}
 
-	RenderItem_Prefab GenerateRenderItemPrefab(physx::PxShape* _shape, const Vector4& _color) {
-		return RenderItem_Prefab(_shape, _color);
-	}
+
+	//antiguos
 
 	template <typename BP>
-	BetterParticlePrefab<BP> GenerateBetterParticlePrefab(const Vector3D& pos = { 0,0,0 }, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
+	Particle_Prefab<BP> GenerateBetterParticlePrefab(const Vector3D& pos = Vector3D::Zero, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) {
 		BP bp = BP(pos, v, a, deathCountdown, damping, w);
-		return BetterParticlePrefab<BP>(BP(pos, v, a, deathCountdown, damping, w));
+		return bp;
 	}
 
 	template <typename BP>
-	BetterParticlePrefab<BP> GenerateBetterParticlePrefab(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
+	Particle_Prefab<BP> GenerateBetterParticlePrefab(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) {
 		BP bp = BP(renderItem, pos, v, a, deathCountdown, damping, w);
-		return BetterParticlePrefab<BP>(bp);
+		return bp;
 	}
 
 	template <typename BP>
-	BetterParticlePrefab<BP> GenerateBetterParticlePrefab(const RenderItem_Prefab& renderItemPrefab, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) {
-		BP bp = BP(nullptr, pos, v, a, deathCountdown, damping, w);
-		BetterParticlePrefab<BP> p(bp);
-		std::string asa = typeid(p).name();
-		p.Particle::SetRenderItem(renderItemPrefab);
+	Particle_Prefab<BP> GenerateBetterParticlePrefab(const RenderItem_Prefab& renderItemPrefab, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) {
+		RenderItemP* ripp= new RenderItemP(renderItemPrefab);
+		BP p = BP(ripp, pos, v, a, deathCountdown, damping, w);
+		return p;
+	}
+
+
+
+	//eficientes al escribir
+
+	template <typename BP>
+	Particle_Prefab<BP> GenerateBetterParticlePrefab(float deathCountdown = -1, double w = 1, double damping = 0.97) {
+		BP bp = BP(Vector3D::Zero, Vector3D::Zero, Vector3D::Zero, deathCountdown, damping, w);
+		return bp;
+	}
+
+	template <typename BP>
+	Particle_Prefab<BP> GenerateBetterParticlePrefab(const RenderItemP* renderItemPrefab, float deathCountdown = -1, double w = 1, double damping = 0.97) {
+		BP p = BP(ripp, Vector3D::Zero, Vector3D::Zero, Vector3D::Zero, deathCountdown, damping, w);
+		return p;
+	}
+
+	template <typename BP>
+	Particle_Prefab<BP> GenerateBetterParticlePrefab(const RenderItem_Prefab& renderItemPrefab, float deathCountdown = -1, double w = 1, double damping = 0.97) {
+		RenderItemP* ripp = new RenderItemP(renderItemPrefab);
+		BP p = BP(ripp, Vector3D::Zero, Vector3D::Zero, Vector3D::Zero, deathCountdown, damping, w);
 		return p;
 	}
 

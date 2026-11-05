@@ -42,8 +42,9 @@ class ParticleEmitter : public BetterParticle<CalculateIfParticleEmitterOrBP<BP>
 
 protected:
 	ParticleEmitter() {};
-	ParticleEmitter(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :BetterParticle<BP>(renderItem, pos, v, a, deathCountdown, damping, w) {};
-	ParticleEmitter(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :BetterParticle<BP>(pos, v, a, deathCountdown, damping, w) {};
+	ParticleEmitter(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :BetterParticle<BP>(renderItem, pos, v, a, deathCountdown, damping, w) {
+	};
+	ParticleEmitter(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :BetterParticle<BP>(pos, v, a, deathCountdown, damping, w) {};
 
 };
 
@@ -51,49 +52,134 @@ class ParticleEmitter_Rectangular_Ortogonal : public ParticleEmitter<ParticleEmi
 {
 	friend class Scene;
 protected:
-	ParticleEmitter_Rectangular_Ortogonal(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter<ParticleEmitter_Rectangular_Ortogonal>(renderItem, pos, v, a, deathCountdown, damping, w) {};
-	ParticleEmitter_Rectangular_Ortogonal(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter<ParticleEmitter_Rectangular_Ortogonal>(pos, v, a, deathCountdown, damping, w) {};
+	ParticleEmitter_Rectangular_Ortogonal(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter<ParticleEmitter_Rectangular_Ortogonal>(renderItem, pos, v, a, deathCountdown, damping, w) 
+	{
+	
+	};
+	ParticleEmitter_Rectangular_Ortogonal(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter<ParticleEmitter_Rectangular_Ortogonal>(pos, v, a, deathCountdown, damping, w) {};
 public:
 	template<typename T>
-	void SetEmittingFunction(const Vector3D& dir, float w, float h, float pps, const BetterParticle<T>& p, ParticleSystem* mySystem) {
-		double timeForNextParticle = deathCountdown;
+	void SetEmittingFunction(const Vector3D& dir, float vel, float w, float h, float pps, const Particle_Prefab<T>& p, ParticleSystem* mySystem) {
+		float timeForNextParticle = deathCountdown;
 		double timeBetweenParticles = 1 / pps;
 
-		BetterParticleCopy<T> pc = p;
-		SetExtraUpdateFunc([mySystem, timeForNextParticle, timeBetweenParticles, dir, w, h, pc](ParticleEmitter_Rectangular_Ortogonal* self, double dt) mutable
+		if(pps != 0.0f)
+		SetExtraUpdateFunc([mySystem, timeForNextParticle, timeBetweenParticles, dir,vel, w, h, p](ParticleEmitter_Rectangular_Ortogonal* self, double dt) mutable
 			{
-				self->GenericEmittingFunctionCall(dir, timeForNextParticle, timeBetweenParticles, w, h, pc, mySystem);
+				self->GenericEmittingFunctionCall(dir,vel, timeForNextParticle, timeBetweenParticles, w, h, p, mySystem);
 			}
 		);
 	}
 private:
 	template<typename T>
-	void GenericEmittingFunctionCall(const Vector3D& dir, double& timeForNextParticle, double timeBetweenParticles, float w, float h, const BetterParticle<T>& p, ParticleSystem* mySystem) {
+	void GenericEmittingFunctionCall(const Vector3D& dir,float vel, float& timeForNextParticle, double timeBetweenParticles, float w, float h, const Particle_Prefab<T>& p, ParticleSystem* mySystem) {
 
 		while (timeForNextParticle > deathCountdown) {
 			timeForNextParticle -= timeBetweenParticles;
 
-			BetterParticle<T>* pNueva = mySystem->addParticle(p);
+			GenericBetterParticle* pNueva = mySystem->addParticle(p);
 
 			if (pNueva)
 			{
-				pNueva->v.RotateVectorToDirPlane(dir);
-				pNueva->transform.p = SquaredUniformDistribution_Oriented(dir, w, h);
+				pNueva->v = { 0,0, vel };
+				pNueva->v.RotateToDirPlane(dir);
+				pNueva->transform.p = this->transform.p+SquaredUniformDistribution_Oriented(dir, w, h);
 			}
 		}
 	}
 };
 
-//class ParticleEmitter_Conical : public ParticleEmitter
-//{
-//	friend class Scene;
-//protected:
-//	ParticleEmitter_Conical(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(renderItem, pos, v, a, deathCountdown, damping, w) {};
-//	ParticleEmitter_Conical(const Vector3D& pos, const Vector3D& v = { 0,0,0 }, const Vector3D& a = { 0,0,0 }, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(pos, v, a, deathCountdown, damping, w) {};
-//private:
-//};
+class ParticleEmitter_Conical : public ParticleEmitter<ParticleEmitter_Conical>
+{
+	friend class Scene;
+protected:
+	ParticleEmitter_Conical(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(renderItem, pos, v, a, deathCountdown, damping, w) {};
+	ParticleEmitter_Conical(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(pos, v, a, deathCountdown, damping, w) {};
+public:
 
+	//La distancia entre los dos círculos es de 10
+	template<typename T>
+	void SetEmittingFunction(const Vector3D& dir, float vel, float rMin, float rMax, float pps, const Particle_Prefab<T>& p, ParticleSystem* mySystem) {
+		float timeForNextParticle = deathCountdown;
+		double timeBetweenParticles = 1 / pps;
 
+		if (pps != 0.0f)
+			SetExtraUpdateFunc([mySystem, timeForNextParticle, timeBetweenParticles, dir, vel, rMin, rMax, p](ParticleEmitter_Conical* self, double dt) mutable
+				{
+					self->GenericEmittingFunctionCall(dir, vel, timeForNextParticle, timeBetweenParticles, rMin, rMax, p, mySystem);
+				}
+			);
+	}
+private:
+	template<typename T>
+	void GenericEmittingFunctionCall(const Vector3D& dir, float vel, float& timeForNextParticle, double timeBetweenParticles, float rMin, float rMax, const Particle_Prefab<T>& p, ParticleSystem* mySystem) {
+
+		while (timeForNextParticle > deathCountdown) {
+			timeForNextParticle -= timeBetweenParticles;
+
+			GenericBetterParticle* pNueva = mySystem->addParticle(p);
+
+			if (pNueva)
+			{
+				Vector3D pos = CircularUniformDistribution_Oriented(dir, 1);
+
+				Vector3D pos0 = pos * rMin;
+
+				Vector3D posF = pos * rMax + 10*dir;
+
+				pNueva->v = (posF - pos0).normalize()*vel;
+
+				pNueva->transform.p = pos0 + this->transform.p;
+			}
+		}
+	}
+};
+
+class ParticleEmitter_Conical_Normal : public ParticleEmitter<ParticleEmitter_Conical_Normal>
+{
+	friend class Scene;
+protected:
+	ParticleEmitter_Conical_Normal(RenderItemP* renderItem, const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(renderItem, pos, v, a, deathCountdown, damping, w) {};
+	ParticleEmitter_Conical_Normal(const Vector3D& pos, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero, float deathCountdown = -1, double damping = 0.97, double w = 1) :ParticleEmitter(pos, v, a, deathCountdown, damping, w) {};
+public:
+
+	//La distancia entre los dos círculos es de 10
+	template<typename T>
+	void SetEmittingFunction(const Vector3D& dir, float vel, float rMin, float rMax, float pps, const Particle_Prefab<T>& p, ParticleSystem* mySystem) {
+		float timeForNextParticle = deathCountdown;
+		double timeBetweenParticles = 1 / pps;
+
+		if (pps != 0.0f)
+			SetExtraUpdateFunc([mySystem, timeForNextParticle, timeBetweenParticles, dir, vel, rMin, rMax, p](ParticleEmitter_Conical_Normal* self, double dt) mutable
+				{
+					self->GenericEmittingFunctionCall(dir, vel, timeForNextParticle, timeBetweenParticles, rMin, rMax, p, mySystem);
+				}
+			);
+	}
+private:
+	template<typename T>
+	void GenericEmittingFunctionCall(const Vector3D& dir, float vel, float& timeForNextParticle, double timeBetweenParticles, float rMin, float rMax, const Particle_Prefab<T>& p, ParticleSystem* mySystem) {
+
+		while (timeForNextParticle > deathCountdown) {
+			timeForNextParticle -= timeBetweenParticles;
+
+			GenericBetterParticle* pNueva = mySystem->addParticle(p);
+
+			if (pNueva)
+			{
+				Vector3D pos = NormalBidimensionalDistribution_Oriented(dir,2);
+
+				Vector3D pos0 = pos * rMin;
+
+				Vector3D posF = pos * rMax + 10 * dir;
+
+				pNueva->v = (posF - pos0).normalize() * vel;
+
+				pNueva->transform.p = pos0 + this->transform.p;
+			}
+		}
+	}
+};
 
 //class ParticleEmitter_Puntual : public ParticleEmitter
 //{

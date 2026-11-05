@@ -9,6 +9,7 @@ class Vector3D;
 class Vector2D
 {
 public:
+	static const Vector2D Zero;
 	float x, y;
 	Vector2D()noexcept :x(0), y(0) {}
 	Vector2D(const Vector2D& v) noexcept :x(v.x), y(v.y) {}
@@ -46,13 +47,13 @@ public:
 	/// @param dirFin: normal del plano rotado
 	/// @param dirIni: normal del plano inicial default plano z = 0, n = (0,0,1)
 	/// @return el vector libre rotado en coordenadas.
-	static Vector3D RotateVectorToDirPlane(const Vector2D& planeCoordinates, const Vector3D& dirFin, const Vector3D& dirIni);
+	static Vector3D GetRotatedVectorToDirPlane(const Vector2D& planeCoordinates, const Vector3D& dirFin, const Vector3D& dirIni);
 
 	/// @brief roto como un vector libre en (x,y,0) para que se mantenga fijo relativo a a un plano que ha rotado alrededor de un eje que pasa por el (0,0,0)
 	/// @param dirFin: normal del plano rotado
 	/// @param dirIni: normal del plano inicial default plano z = 0, n = (0,0,1)
 	/// @return el vector libre rotado en coordenadas.
-	Vector3D RotateVectorToDirPlane(const Vector3D& dirFin, const Vector3D& dirIni);
+	Vector3D GetRotatedVectorToDirPlane(const Vector3D& dirFin, const Vector3D& dirIni);
 
 };
 inline std::ostream& operator<<(std::ostream& os, const Vector2D& v) {
@@ -64,6 +65,8 @@ inline Vector2D operator*(float scalar, const Vector2D& v) noexcept { return v *
 class Vector3D
 {
 public:
+	static const Vector3D Zero;
+
 	float x, y, z;
 	Vector3D()noexcept :x(0), y(0), z(0) {}
 	Vector3D(const Vector3D& v) noexcept :x(v.x), y(v.y), z(v.z) {}
@@ -105,16 +108,16 @@ public:
 	/// @param dirFin: normal del plano rotado
 	/// @param dirIni: normal del plano inicial default plano z = 0, n = (0,0,1)
 	/// @return el vector libre rotado en coordenadas.
-	static Vector3D RotateVectorToDirPlane(const Vector3D& planeCoordinates, const Vector3D& dirFin, const Vector3D& dirIni = {0,0,1});
+	static Vector3D GetRotatedVectorToDirPlane(const Vector3D& planeCoordinates, const Vector3D& dirFin, const Vector3D& dirIni = {0,0,1});
 	/// @brief rota un vector libre igual a mí para que se mantenga fijo relativo a a un plano que ha rotado alrededor de un eje que pasa por el (0,0,0)
 /// @param dirFin: normal del plano rotado
 /// @param dirIni: normal del plano inicial default plano z = 0, n = (0,0,1)
 /// @return yo si hubiera rotado.
-	Vector3D RotateVectorToDirPlane(const Vector3D& dirFin, const Vector3D& dirIni = { 0,0,1 });
+	Vector3D GetRotatedVectorToDirPlane(const Vector3D& dirFin, const Vector3D& dirIni = { 0,0,1 });
 	/// @brief roto para mantenerme fijo relativo a a un plano que ha rotado alrededor de un eje que pasa por el (0,0,0)
 /// @param dirFin: normal del plano rotado
 /// @param dirIni: normal del plano inicial default plano z = 0, n = (0,0,1)
-	void RotatedToDirPlane(const Vector3D& dirFin, const Vector3D& dirIni = { 0,0,1 });
+	void RotateToDirPlane(const Vector3D& dirFin, const Vector3D& dirIni = { 0,0,1 });
 };
 inline std::ostream& operator<<(std::ostream& os, const Vector3D& v) {
 	os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
@@ -122,7 +125,7 @@ inline std::ostream& operator<<(std::ostream& os, const Vector3D& v) {
 }
 inline Vector3D operator*(float scalar, const Vector3D& v) noexcept { return v * scalar; }
 
-inline Vector3D Vector2D::RotateVectorToDirPlane(const Vector2D& planeRelativeCoordinates, const Vector3D& dirFin, const Vector3D& dirIni = { 0,0,1 })
+inline Vector3D Vector2D::GetRotatedVectorToDirPlane(const Vector2D& planeRelativeCoordinates, const Vector3D& dirFin, const Vector3D& dirIni = { 0,0,1 })
 {
 	Vector3D axis = dirIni.cross(dirFin);
 	double angleCos = dirIni.dot(dirFin);
@@ -132,9 +135,9 @@ inline Vector3D Vector2D::RotateVectorToDirPlane(const Vector2D& planeRelativeCo
 	return posFin;
 }
 
-inline Vector3D Vector2D::RotateVectorToDirPlane(const Vector3D& dirFin, const Vector3D& dirIni = { 0,0,1 })
+inline Vector3D Vector2D::GetRotatedVectorToDirPlane(const Vector3D& dirFin, const Vector3D& dirIni = { 0,0,1 })
 {
-	return RotateVectorToDirPlane(*this, dirFin, dirIni);
+	return GetRotatedVectorToDirPlane(*this, dirFin, dirIni);
 }
 
 inline Vector2D::Vector2D(const Vector3D& v) : x(v.x), y(v.y) {}
