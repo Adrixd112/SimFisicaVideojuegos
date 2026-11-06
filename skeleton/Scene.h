@@ -216,7 +216,7 @@ public:
 			timeSinceSceneInit += dt;
 			for (Particle* p : particles) { p->Integrate(dt); }
 			for (std::pair<const std::string, ParticleSystem>& ps : particleSystems) {
-				ps.second.updateParticles(dt);
+				ps.second.updateParticles(dt,timeSinceSceneInit);
 			}
 		}
 
