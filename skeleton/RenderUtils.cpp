@@ -153,7 +153,7 @@ void renderCallback()
 
 void exitCallback(void)
 {
-	delete sCamera;
+	delete defaultCamera;
 	cleanupPhysics(true);
 }
 }
