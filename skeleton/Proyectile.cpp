@@ -1,27 +1,27 @@
 #include "Proyectile.h"
 #include <iostream>
 
-void Proyectile::RecalculateSimulateds(const Vector3D& vReal,double wReal,double vRealProp)//prop vsimulada/vreal)
+void Proyectile::RecalculateSimulateds()
 {
 	v = vReal * vRealProp;
-	vRealProp2 = pow(vRealProp, 2);
+	const double vRealProp2 = pow(vRealProp, 2);
 
 	w = wReal * vRealProp2;
+	a = aReal * vRealProp2;
 
 	std::cout << "vre:" << vReal <<"mod: "<<vReal.magnitude() << " vs:" << v <<"mod: " << v.magnitude() << "\n";
 }
 
-Proyectile::Proyectile(const Vector3D& pos, double vRealProp, const Vector3D& vReal, double deathCountdown, double damping,double w) :
-	BetterParticle<Proyectile>(pos,Vector3D::Zero, damping,w)
+Proyectile::Proyectile(const Vector3D& pos, double vRealProp, const Vector3D& vReal,  double damping,double w) :vReal(vReal), aReal(a),  wReal(w), vRealProp(vRealProp), Particle(pos, damping)
 {
-	RecalculateSimulateds(vReal,w,vRealProp);
+	RecalculateSimulateds();
 	renderItem->color = { 1,0,0,1 };
 
 }
-Proyectile::Proyectile(const Vector3D& pos, double vRealProp, double damping, const Vector3D& vReal ) : Proyectile(pos,vRealProp, vReal,  damping) {
+Proyectile::Proyectile(const Vector3D& pos, double vRealProp, double damping, const Vector3D& vReal) : Proyectile(pos,vRealProp, vReal,  damping) {
 
 }
-Proyectile::Proyectile(double w, const Vector3D& pos, double vRealProp, const Vector3D& vReal, double deathCountdown,  double damping) :Proyectile(pos,vRealProp, vReal,deathCountdown,  damping, w)
+Proyectile::Proyectile(double w, const Vector3D& pos, double vRealProp, const Vector3D& vReal,  double damping) :Proyectile(pos,vRealProp, vReal,  damping, w)
 {
 }
 
@@ -30,7 +30,7 @@ Proyectile::Proyectile(double m, const Vector3D& pos, const Vector3D& vReal, dou
 	
 }
 
-Proyectile::Proyectile(double m, const Vector3D& pos, const Vector3D& dirV, double vReal, double vSim,double deathCountdown,  double damping):Proyectile(1/m,pos,vSim/vReal,vReal*dirV,deathCountdown,damping)
+Proyectile::Proyectile(double m, const Vector3D& pos, const Vector3D& dirV, double vReal, double vSim,  double damping):Proyectile(1/m,pos,vSim/vReal,vReal*dirV,damping)
 {
 }
 

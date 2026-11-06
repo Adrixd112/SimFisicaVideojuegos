@@ -97,11 +97,15 @@ public:
 		return particles.back();
 	}
 
-	Particle_Prefab<Proyectile> GenerateProyectile(const Vector3D& pos, double vRealProp, const Vector3D& v = Vector3D::Zero, double deathCountdown=-1, double damping = 0.97, double w = 1) {
-		return Proyectile(pos, vRealProp, v,deathCountdown, damping, w);
+	Proyectile* addProyectile(const Vector3D& pos, double vRealProp, const Vector3D& v = Vector3D::Zero,  double damping = 0.97, double w = 1) {
+		Proyectile* p = new Proyectile(pos, vRealProp, v,  damping, w);
+		particles.push_back(p);
+		return p;
 	}
-	Particle_Prefab<Proyectile> GenerateProyectile(double m, const Vector3D& pos, const Vector3D& dirV, double vReal, double vSim,double deathCountdown = -1, double damping = 0.97) {
-		return Proyectile(m, pos, dirV, vReal, vSim,deathCountdown, damping);
+	Proyectile* addProyectile(double m, const Vector3D& pos, const Vector3D& dirV, double vReal, double vSim, double damping = 0.97) {
+		Proyectile* p = new Proyectile(m, pos, dirV, vReal, vSim, damping);
+		particles.push_back(p);
+		return p;
 	}
 	/*Proyectile* addProyectile(const Vector3D& pos, double damping, double vRealProp, const Vector3D& v = Vector3D::Zero, const Vector3D& a = Vector3D::Zero)
 	{
@@ -212,7 +216,7 @@ public:
 			timeSinceSceneInit += dt;
 			for (Particle* p : particles) { p->Integrate(dt); }
 			for (std::pair<const std::string, ParticleSystem>& ps : particleSystems) {
-				ps.second.updateParticles(dt,getTimeSinceSceneInit());
+				ps.second.updateParticles(dt);
 			}
 		}
 
@@ -246,7 +250,7 @@ protected:
 	bool paused;
 	double timeSinceSceneInit;
 private:
-	
+
 	std::unordered_map<std::string, ParticleSystem> particleSystems;
 	std::unordered_set<RenderItemO*> nonParticleRenderItems;
 	std::vector<TransformSPointer> nonParticleTransforms;
