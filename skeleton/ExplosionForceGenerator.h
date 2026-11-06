@@ -11,7 +11,7 @@ class ExplosionForceGenerator :public ForceGenerator
 
 	float currentTime;
 
-	const float explosionTimeConstant = 1;
+	const float explosionTimeConstant = 1.2;
 
 
 	Vector3D explosionOrigin;

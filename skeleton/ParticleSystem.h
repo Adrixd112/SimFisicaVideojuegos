@@ -48,7 +48,7 @@ public:
 	
 	bool removeForceGenerator(std::shared_ptr<ForceGenerator> fg);
 
-	void updateParticles(float dt); 
+	void updateParticles(float dt,float sceneT); 
 
 	void setUseForcesActive(bool useForcesActive) {
 		this->forceGeneratorsActive = useForcesActive;

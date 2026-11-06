@@ -52,14 +52,14 @@ bool ParticleSystem::removeForceGenerator(std::shared_ptr<ForceGenerator> fg)
 	return encontrado;
 }
 
-void ParticleSystem::updateParticles(float dt)
+void ParticleSystem::updateParticles(float dt,float sceneT)
 {
 	if (!active) return;
 	if (forceGeneratorsActive) {
 		for (int fi = 0;fi < STATIC_MAX_FORCEGEN_COUNT;fi++) {
 			std::shared_ptr<ForceGenerator> fgen = forceGenerators[fi];
 			if (fgen != nullptr && fgen->getActive()) {
-				fgen->update(dt);
+				fgen->update(sceneT);
 			}
 		}
 	}
