@@ -1,0 +1,44 @@
+A1) Particle.h líneas 47-49 y a dónde apuntan en el cpp:
+void eulerIntegrate(double dt);
+void semiEulerIntegrate(double dt);
+void verletIntegrate(double dt);
+A2) Particle.h linea 14 el parámetro, y Scene_3.cpp líneas 11 y 16, uno con masa infinita y el otro con 120Kg de masa
+A3)ParticleSystem.cpp linia 78
+
+
+
+B) Ver commit tageado con proyectiles-ok si se quiere probar funcional. Memory leaks, por eso este ultimo commit. Proyectile.cpp líneas 4-20.
+
+
+
+C)ParticleSystem.h y .cpp
+
+D)Uso lambdas en betterParticle para cosas como el update o la detección de cuando muere si quiero añadir condiciones extras. Los generadores de partículas lo que hacen es sobreescriben esas lambdas con diferentes comportamientos. He creado un tipo BetterParticlePrefab que está hecho para poder copiarse y destruirse desde cualquier sitio y para no renderizarse por defecto.
+D1)ParticleEmitter.h 102-135 es un ejemplo.
+D2)En las lambdas uso funciones de ParticleEmitterOperations para obtener puntos siguiendo distribuciones. Ver ejemplo anterior y linea 170 de ParticleEmitter.h .
+D3)No implementado tal cual. Las únicas maneras de desactivar generadores de partículas individuales son cambiando la función setSleep() en Betterparticle.h 163 para que la partícula no haga integrate en función de algo, como por ejemplo un puntero a bool que le pasas, o SetExtraUpdateFunc en Betterparticle.h en la linea 150, o creando un sistema para un solo generador y desactivando el sistema con ParticleSystem.h SetActive(false) linea 61.
+
+E) ForceGenerator.h
+E1)ParticleSystem.cpp linea 78 y el método calculateForce, que devuelve una fuerza.
+E2)ParticleSystem.cpp linea 75-80.
+E3)ParticleSystem.h linea 20, 47 y 49; y lo que hacen los métodos de la 47 y 49.
+E4)WindForceGenerator varía con el espacio, ExplosionGenerator varía con el tiempo. Este último no funciona en el tag entrega-intermedia por bug pequeño arreglado tarde luego después de cenar en tag entrega-intermedia-atrasada.
+
+
+
+Controles:
+
+En tag proyectiles-funcionales, tecla 5 para ir a escena y luego R y T para generar proyectiles desde la cámara.
+
+A partir de la tag entrega-intermedia escena tecla 6 para escena con particleEmitters pero sin fuerzas.
+
+En la tag entrega-intermedia escena con tecla 7 tecla R para activar o desactivar viento.
+
+En la tag entrega-intermedia-atrasada tecla 8 para ir a escena. Teclas R y T para desactivar/reactivar los generadores de fuerzas de cada uno de los dos sistemas de partículas (uno usado par cada generador), tecla Y para explosión en mitad del chorro de partículas.
+
+
+Tecla espacio para pausar/despausar. 
+
+Teclas Q y E para subir y bajar la cámara. 
+
+
