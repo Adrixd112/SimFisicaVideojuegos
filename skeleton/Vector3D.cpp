@@ -1,6 +1,7 @@
 #include "Vector3D.h"
 
 const Vector3D Vector3D::Zero = Vector3D(0, 0, 0);
+const Vector3D Vector3D::Infinity = Vector3D(INFINITY, INFINITY, INFINITY);
 const Vector2D Vector2D::Zero = Vector2D(0, 0);
 
 Vector3D Vector3D::GetRotatedVectorToDirPlane(const Vector3D& planeRelativeCoordinates, const Vector3D& dirFin, const Vector3D& dirIni)

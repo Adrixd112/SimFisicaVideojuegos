@@ -66,6 +66,7 @@ class Vector3D
 {
 public:
 	static const Vector3D Zero;
+	static const Vector3D Infinity;
 
 	float x, y, z;
 	Vector3D()noexcept :x(0), y(0), z(0) {}

@@ -12,8 +12,8 @@ void Scene_3B::init()
 
 	RenderItem_Prefab ripParticulaGris(CreateShape(physx::PxSphereGeometry(0.5f)), Vector4(0.4, 0.4, 0.4, 1));
 
-	p.SetEmittingFunction(Vector3D(0, -1, 0).normalize(), 3, 20, 20, 100, GenerateBetterParticlePrefab<BetterParticle<>>(ripParticulaGris, 3), GetParticleSystem("1"));
-	p.transform.p = { 0,100,0 };
+	p.SetEmittingFunction(Vector3D(0, -1, 0).normalize(), 3, 20, 20, 100, GenerateBetterParticlePrefab<BetterParticle<>>(ripParticulaGris, 10,10), GetParticleSystem("1"));
+	p.transform.p = { 0,50,0 };
 	GetParticleSystem("1")->addParticle(p);
 
 	//Rectangular-uniforme2
@@ -23,8 +23,8 @@ void Scene_3B::init()
 
 	RenderItem_Prefab ripParticulaRoja(CreateShape(physx::PxSphereGeometry(0.5f)), Vector4(0.8, 0.8, 0.2, 1));
 
-	p2.SetEmittingFunction(Vector3D(0, -1, 0).normalize(), 3, 20, 20, 100, GenerateBetterParticlePrefab<BetterParticle<>>(ripParticulaRoja, -1, 10), GetParticleSystem("2"));
-	p2.transform.p = { 0,100,0 };
+	p2.SetEmittingFunction(Vector3D(0, -1, 0).normalize(), 3, 20, 20, 100, GenerateBetterParticlePrefab<BetterParticle<>>(ripParticulaRoja, 10, 30), GetParticleSystem("2"));
+	p2.transform.p = { 0,50,0 };
 
 	GetParticleSystem("2")->addParticle(p2);
 
@@ -32,15 +32,15 @@ void Scene_3B::init()
 
 
 
-	//std::shared_ptr<ForceGenerator> gravity = std::make_shared<GravityForceGenerator> ();
-	//std::shared_ptr<ForceGenerator> wind = std::shared_ptr<ForceGenerator>(new WindForceGenerator({ 0,0,1 }, 0, { 0,0,0 }, { 10000,10000,10000 }));
-	//explosion = std::shared_ptr<ExplosionForceGenerator>(new ExplosionForceGenerator({0,0,0},1000,30));
+	std::shared_ptr<ForceGenerator> gravity = std::make_shared<GravityForceGenerator> ();
+	std::shared_ptr<ForceGenerator> wind = std::shared_ptr<ForceGenerator>(new WindForceGenerator({ 0,0,1 }, 0, { 0,0,0 }, { 10000,10000,10000 }));
+	explosion = std::shared_ptr<ExplosionForceGenerator>(new ExplosionForceGenerator({0,0,0},10000,20));
 
-	//GetParticleSystem("2")->addForceGenerator(explosion);
-	//GetParticleSystem("1")->addForceGenerator(explosion);
-	//GetParticleSystem("2")->addForceGenerator(wind);
-	//GetParticleSystem("1")->addForceGenerator(wind);
-	//GetParticleSystem("2")->addForceGenerator(gravity);
-	//GetParticleSystem("1")->addForceGenerator(gravity);
+	GetParticleSystem("2")->addForceGenerator(explosion);
+	GetParticleSystem("1")->addForceGenerator(explosion);
+	GetParticleSystem("2")->addForceGenerator(wind);
+	GetParticleSystem("1")->addForceGenerator(wind);
+	GetParticleSystem("2")->addForceGenerator(gravity);
+	GetParticleSystem("1")->addForceGenerator(gravity);
 
 }
