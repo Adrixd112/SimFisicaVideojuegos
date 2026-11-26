@@ -12,7 +12,7 @@ void Proyectile::RecalculateSimulateds(const Vector3D& vReal,double wReal,double
 }
 
 Proyectile::Proyectile(const Vector3D& pos, double vRealProp, const Vector3D& vReal, double deathCountdown, double damping,double w) :
-	BetterParticle<Proyectile>(pos,Vector3D::Zero, damping,w)
+	BetterParticle<Proyectile>(pos,Vector3D::Zero,deathCountdown, damping,w)
 {
 	RecalculateSimulateds(vReal,w,vRealProp);
 	renderItem->color = { 1,0,0,1 };

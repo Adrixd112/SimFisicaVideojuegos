@@ -24,6 +24,7 @@ protected:
 
 	virtual void Integrate(double dt) override {
 		this->a += Vector3D(0, (vRealProp2 - 1) * -9.81, 0); //para contrarestar la gravedad
+		std::cout << deathCountdown << "\n";
 		BetterParticle<Proyectile>::Integrate(dt);
 	}
 };
