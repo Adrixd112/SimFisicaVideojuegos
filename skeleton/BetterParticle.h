@@ -191,7 +191,23 @@ public:
 		if (this->Particle::renderItem != nullptr) this->Particle::renderItem->SetTransform(nullptr);
 	}
 	~Particle_Prefab() = default;
-	
+
+	void SetExtraUpdateFunc(std::function<void(NormalizeBetterParticle<BP>*, double)> func)
+	{
+		extraUpdateFunc = std::move(func);
+	}
+
+	void SetOnDeath(std::function<void(NormalizeBetterParticle<BP>*)> func) {
+		onDeath = std::move(func);
+	}
+
+	void SetWillDieConditions(std::function<bool(NormalizeBetterParticle<BP>*)> func) {
+		willDieConditions = std::move(func);
+	}
+
+	void SetIsSleep(std::function<bool(NormalizeBetterParticle<BP>*)> func) {
+		isSleep = std::move(func);
+	}
 };
 
 
